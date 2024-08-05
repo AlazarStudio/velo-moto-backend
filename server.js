@@ -39,6 +39,7 @@ async function main() {
 		PORT,
 		console.log(`Server running in ${process.env.NODE_ENV} on port ${PORT}`)
 	)
+	
 }
 
 main()
