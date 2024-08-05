@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import { hash, verify } from 'argon2'
 import asyncHandler from 'express-async-handler'
 
@@ -34,7 +33,7 @@ export const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const registerUser = asyncHandler(async (req, res) => {
-	const { login, email, password } = req.body
+	const { login, email, password, name } = req.body
 
 	const isHaveUser = await prisma.user.findUnique({
 		where: {
@@ -52,7 +51,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 			login,
 			email,
 			password: await hash(password),
-			name: faker.name.fullName()
+			name
 		},
 		select: UserFields
 	})
