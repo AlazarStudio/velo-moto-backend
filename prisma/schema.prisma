@@ -24,24 +24,24 @@ model User {
   password String
 }
 
-// model Group {
-//   id   Int    @id @default(autoincrement())
-//   name String
-//   Item Item[]
-// }
+model Group {
+  id   Int    @id @default(autoincrement())
+  name String
+  Item Item[]
+}
 
 model Item {
-  id              Int       @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   name            String
-  // images          String[]
+  images          String[]
   description     String
-  // group           Group     @relation(fields: [groupId], references: [id])
-  // groupId         Int
+  group           Group    @relation(fields: [groupId], references: [id])
+  groupId         Int
   price           Int
-  priceForSale    Int       @map("price_for_sale")
+  priceForSale    Int      @map("price_for_sale")
   code            Int
   barcode         String
-  nds             Int
+  nds             Int? @default(0)
   frame           String
   system          String
   size            String
@@ -52,11 +52,11 @@ model Item {
   carriage        String
   flywheels       String
   breaks          String
-  frontDerailleur String    @map("front_derailleur")
-  backDerailleur  String    @map("back_derailleur")
+  frontDerailleur String   @map("front_derailleur")
+  backDerailleur  String   @map("back_derailleur")
   bushings        String
   rubber          String
-  // ItemCount       Int
+  itemCount       Int?     @default(0) @map("item_count")
   // ItemCount       ItemCount @relation(fields: [], references: [])
 }
 

@@ -11,6 +11,7 @@ import authRoutes from "./app/auth/auth.routes.js";
 import userRoutes from "./app/user/user.routes.js";
 
 import itemRoutes from "./app/item/item.routes.js"
+import groupRoutes from "./app/group/group.routes.js"
 
 dotenv.config();
 
@@ -28,9 +29,10 @@ async function main() {
   app.use("/uploads", express.static(path.join(__dirname, "/uploads/")));
 
   app.use("/api/auth", authRoutes);
-  app.use("/api/users", userRoutes);
+  app.use("/api/user", userRoutes);
 
   app.use("/api/items", itemRoutes);
+  app.use("/api/groups", groupRoutes);
 
   app.use(notFound);
   app.use(errorHandler);

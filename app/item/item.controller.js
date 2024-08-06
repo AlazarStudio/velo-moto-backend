@@ -38,7 +38,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
     name,
     images,
     description,
-    group,
+    groupId,
     price,
     priceForSale,
     code,
@@ -58,6 +58,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
     backDerailleur,
     bushings,
     rubber,
+    itemCount,
   } = req.body;
 
   const item = await prisma.item.create({
@@ -65,7 +66,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
       name,
       images,
       description,
-      group,
+      groupId,
       price,
       priceForSale,
       code,
@@ -85,6 +86,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
       backDerailleur,
       bushings,
       rubber,
+      itemCount,
     },
   });
 
@@ -99,7 +101,7 @@ export const updateItem = asyncHandler(async (req, res) => {
     name,
     images,
     description,
-    group,
+    groupId,
     price,
     priceForSale,
     code,
@@ -119,6 +121,7 @@ export const updateItem = asyncHandler(async (req, res) => {
     backDerailleur,
     bushings,
     rubber,
+    itemCount,
   } = req.body;
 
   try {
@@ -130,7 +133,7 @@ export const updateItem = asyncHandler(async (req, res) => {
         name,
         images,
         description,
-        group,
+        groupId,
         price,
         priceForSale,
         code,
@@ -150,6 +153,7 @@ export const updateItem = asyncHandler(async (req, res) => {
         backDerailleur,
         bushings,
         rubber,
+        itemCount,
       },
     });
 
