@@ -17,11 +17,10 @@ model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
-  email    String @unique
-  login    String @unique
-  name     String
-  password String
+  email     String   @unique
+  login     String   @unique
+  name      String
+  password  String
 }
 
 model Group {
@@ -31,17 +30,19 @@ model Group {
 }
 
 model Item {
-  id              Int      @id @default(autoincrement())
+  id              Int        @id @default(autoincrement())
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
   name            String
   images          String[]
   description     String
-  group           Group    @relation(fields: [groupId], references: [id])
+  group           Group      @relation(fields: [groupId], references: [id])
   groupId         Int
   price           Int
-  priceForSale    Int      @map("price_for_sale")
+  priceForSale    Int        @map("price_for_sale")
   code            Int
   barcode         String
-  nds             Int? @default(0)
+  nds             Int?       @default(0)
   frame           String
   system          String
   size            String
@@ -52,10 +53,42 @@ model Item {
   carriage        String
   flywheels       String
   breaks          String
-  frontDerailleur String   @map("front_derailleur")
-  backDerailleur  String   @map("back_derailleur")
+  frontDerailleur String     @map("front_derailleur")
+  backDerailleur  String     @map("back_derailleur")
   bushings        String
   rubber          String
-  itemCount       Int?     @default(0) @map("item_count")
+  itemCount       Int?       @default(0) @map("item_count")
+  Receipt         Receipt[]
+  Sale            Sale[]
+  WriteOff        WriteOff[]
 }
 
+model Receipt {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    Int
+  quantity  Int
+  price     Int
+}
+
+model Sale {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    Int
+  quantity  Int
+  price     Int
+}
+
+model WriteOff {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    Int
+  quantity  Int
+  reason    String
+}
