@@ -8,7 +8,15 @@ import { prisma } from "../prisma.js";
 export const getItems = asyncHandler(async (req, res) => {
   const items = await prisma.item.findMany({
     orderBy: {
-      createdAt: "desc",
+      name: "desc",
+      // createdAt: "desc",
+    },
+    include: {
+      group: {
+        select: {
+          name: true,
+        },
+      },
     },
   });
   res.json(items);
@@ -20,6 +28,13 @@ export const getItems = asyncHandler(async (req, res) => {
 export const getItem = asyncHandler(async (req, res) => {
   const item = await prisma.item.findUnique({
     where: { id: +req.params.id },
+    include: {
+      group: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
 
   if (!item) {
@@ -61,17 +76,19 @@ export const createNewItem = asyncHandler(async (req, res) => {
     itemCount,
   } = req.body;
 
+  console.log('Received data:', req.body); 
+
   const item = await prisma.item.create({
     data: {
       name,
       images,
       description,
-      groupId,
-      price,
-      priceForSale,
-      code,
+      groupId: parseInt(groupId), 
+      price: parseInt(price), 
+      priceForSale: parseInt(priceForSale), 
+      code: parseInt(code),
       barcode,
-      nds,
+      nds: parseInt(nds), 
       frame,
       system,
       size,
@@ -86,12 +103,13 @@ export const createNewItem = asyncHandler(async (req, res) => {
       backDerailleur,
       bushings,
       rubber,
-      itemCount,
+      itemCount: parseInt(itemCount),
     },
   });
 
   res.json(item);
 });
+
 
 // @desc    Update item
 // @route 	PUT /api/items/:id
@@ -130,30 +148,30 @@ export const updateItem = asyncHandler(async (req, res) => {
         id: +req.params.id,
       },
       data: {
-        name,
-        images,
-        description,
-        groupId,
-        price,
-        priceForSale,
-        code,
-        barcode,
-        nds,
-        frame,
-        system,
-        size,
-        ratchet,
-        weight,
-        speed,
-        fork,
-        carriage,
-        flywheels,
-        breaks,
-        frontDerailleur,
-        backDerailleur,
-        bushings,
-        rubber,
-        itemCount,
+      name,
+      images,
+      description,
+      groupId: parseInt(groupId), 
+      price: parseInt(price), 
+      priceForSale: parseInt(priceForSale), 
+      code: parseInt(code),
+      barcode,
+      nds: parseInt(nds), 
+      frame,
+      system,
+      size,
+      ratchet,
+      weight,
+      speed,
+      fork,
+      carriage,
+      flywheels,
+      breaks,
+      frontDerailleur,
+      backDerailleur,
+      bushings,
+      rubber,
+      itemCount: parseInt(itemCount),
       },
     });
 

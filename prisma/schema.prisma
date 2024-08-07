@@ -57,12 +57,5 @@ model Item {
   bushings        String
   rubber          String
   itemCount       Int?     @default(0) @map("item_count")
-  // ItemCount       ItemCount @relation(fields: [], references: [])
 }
 
-// model ItemCount {
-//   item   Item @relation(fields: [itemId], references: [id])
-//   itemId Int
-
-//   @@map("item_count")
-// }

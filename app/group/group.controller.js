@@ -9,7 +9,8 @@ import { prisma } from '../prisma.js'
 export const getGroups = asyncHandler(async (req, res) => {
 	const groups = await prisma.group.findMany({
 		orderBy: {
-			createdAt: 'desc'
+			// createdAt: 'desc'
+			name: 'desc'
 		}
 	})
 	res.json(groups)

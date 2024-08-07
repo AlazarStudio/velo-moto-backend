@@ -33,3 +33,6 @@ export const protect = asyncHandler(async (req, res, next) => {
 		throw new Error('Not authorized, I do not have a token')
 	}
 })
+
+
+// export const protect = asyncHandler(async (req, res, next) => { let token = 1; if (token != 1) {res.status(401)}})
