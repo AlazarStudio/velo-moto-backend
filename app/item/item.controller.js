@@ -51,6 +51,7 @@ export const getItem = asyncHandler(async (req, res) => {
 export const createNewItem = asyncHandler(async (req, res) => {
   const {
     name,
+    color,
     images,
     description,
     groupId,
@@ -81,6 +82,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
   const item = await prisma.item.create({
     data: {
       name,
+      color,
       images,
       description,
       groupId: parseInt(groupId),
@@ -116,6 +118,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
 export const updateItem = asyncHandler(async (req, res) => {
   const {
     name,
+    color,
     images,
     description,
     groupId,
@@ -148,6 +151,7 @@ export const updateItem = asyncHandler(async (req, res) => {
       },
       data: {
         name,
+        color,
         images,
         description,
         groupId: parseInt(groupId),

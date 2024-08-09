@@ -5,13 +5,25 @@ import { prisma } from "../prisma.js";
 // @route   POST /api/writeoffs
 // @access  Private
 export const createWriteOff = asyncHandler(async (req, res) => {
-  const { itemId, quantity, reason } = req.body;
+  const { itemId, quantity, reason, price } = req.body;
+
+  const item = await prisma.item.findUnique({
+    where: { id: parseInt(itemId) },
+  });
+
+  if (!item) {
+    res.status(404);
+    throw new Error("Item not found!");
+  }
+
+  const itemPrice = price ? parseInt(price) : item.price;
 
   const writeOff = await prisma.writeOff.create({
     data: {
       itemId: parseInt(itemId),
       quantity: parseInt(quantity),
       reason,
+      price: itemPrice, 
     },
   });
 

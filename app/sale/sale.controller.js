@@ -7,11 +7,22 @@ import { prisma } from "../prisma.js";
 export const createSale = asyncHandler(async (req, res) => {
   const { itemId, quantity, price } = req.body;
 
+  const item = await prisma.item.findUnique({
+    where: { id: parseInt(itemId) },
+  });
+
+  if (!item) {
+    res.status(404);
+    throw new Error("Item not found!");
+  }
+
+  const itemPrice = price ? parseInt(price) : item.priceForSale;
+
   const sale = await prisma.sale.create({
     data: {
       itemId: parseInt(itemId),
       quantity: parseInt(quantity),
-      price: parseInt(price),
+      price: itemPrice,
     },
   });
 
