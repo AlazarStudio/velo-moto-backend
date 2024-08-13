@@ -1,5 +1,4 @@
 import asyncHandler from "express-async-handler";
-
 import { prisma } from "../prisma.js";
 
 // @desc    Get items
@@ -9,7 +8,6 @@ export const getItems = asyncHandler(async (req, res) => {
   const items = await prisma.item.findMany({
     orderBy: {
       name: "desc",
-      // createdAt: "desc",
     },
     include: {
       group: {
@@ -46,12 +44,15 @@ export const getItem = asyncHandler(async (req, res) => {
 });
 
 // @desc    Create new item
-// @route 	POST /api/items
+// @route   POST /api/items
 // @access  Private
 export const createNewItem = asyncHandler(async (req, res) => {
   const {
     name,
     color,
+    gender,        // Новое поле для пола
+    ageGroup,      // Новое поле для возрастной группы
+    location,
     images,
     description,
     groupId,
@@ -83,6 +84,9 @@ export const createNewItem = asyncHandler(async (req, res) => {
     data: {
       name,
       color,
+      gender,       // Добавлено поле gender
+      ageGroup,     // Добавлено поле ageGroup
+      location,
       images,
       description,
       groupId: parseInt(groupId),
@@ -90,7 +94,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
       priceForSale: parseInt(priceForSale),
       code: parseInt(code),
       barcode,
-      nds: parseInt(nds),
+      nds,
       frame,
       system,
       size,
@@ -105,7 +109,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
       backDerailleur,
       bushings,
       rubber,
-      itemCount: parseInt(itemCount),
+      itemCount, 
     },
   });
 
@@ -113,12 +117,15 @@ export const createNewItem = asyncHandler(async (req, res) => {
 });
 
 // @desc    Update item
-// @route 	PUT /api/items/:id
+// @route   PUT /api/items/:id
 // @access  Private
 export const updateItem = asyncHandler(async (req, res) => {
   const {
     name,
     color,
+    gender,        // Новое поле для пола
+    ageGroup,      // Новое поле для возрастной группы
+    location,
     images,
     description,
     groupId,
@@ -152,6 +159,9 @@ export const updateItem = asyncHandler(async (req, res) => {
       data: {
         name,
         color,
+        gender,       // Добавлено поле gender
+        ageGroup,     // Добавлено поле ageGroup
+        location,
         images,
         description,
         groupId: parseInt(groupId),
@@ -159,7 +169,7 @@ export const updateItem = asyncHandler(async (req, res) => {
         priceForSale: parseInt(priceForSale),
         code: parseInt(code),
         barcode,
-        nds: parseInt(nds),
+        nds,
         frame,
         system,
         size,
@@ -174,7 +184,7 @@ export const updateItem = asyncHandler(async (req, res) => {
         backDerailleur,
         bushings,
         rubber,
-        itemCount: parseInt(itemCount),
+        itemCount,
       },
     });
 
@@ -186,7 +196,7 @@ export const updateItem = asyncHandler(async (req, res) => {
 });
 
 // @desc    Delete item
-// @route 	DELETE /api/items/:id
+// @route   DELETE /api/items/:id
 // @access  Private
 export const deleteItem = asyncHandler(async (req, res) => {
   try {

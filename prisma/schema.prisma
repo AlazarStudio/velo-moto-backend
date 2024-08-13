@@ -35,8 +35,11 @@ model Item {
   updatedAt       DateTime   @updatedAt @map("updated_at")
   name            String
   color           String
+  gender          String     @default("Unspecified")
+  ageGroup        String     @default("Unspecified") @map("age_group")
+  location        String     @default("warehouse")
   images          String[]
-  description     String
+  description     String?
   group           Group      @relation(fields: [groupId], references: [id])
   groupId         Int
   price           Int
@@ -44,20 +47,20 @@ model Item {
   code            Int
   barcode         String
   nds             Int?       @default(0)
-  frame           String
-  system          String
-  size            String
-  ratchet         String
-  weight          String
-  speed           String
-  fork            String
-  carriage        String
-  flywheels       String
-  breaks          String
-  frontDerailleur String     @map("front_derailleur")
-  backDerailleur  String     @map("back_derailleur")
-  bushings        String
-  rubber          String
+  frame           String?
+  system          String?
+  size            String?
+  ratchet         String?
+  weight          String?
+  speed           String?
+  fork            String?
+  carriage        String?
+  flywheels       String?
+  breaks          String?
+  frontDerailleur String?    @map("front_derailleur")
+  backDerailleur  String?    @map("back_derailleur")
+  bushings        String?
+  rubber          String?
   itemCount       Int?       @default(0) @map("item_count")
   Receipt         Receipt[]
   Sale            Sale[]
@@ -91,6 +94,6 @@ model WriteOff {
   item      Item     @relation(fields: [itemId], references: [id])
   itemId    Int
   quantity  Int
-  reason    String
+  reason    String?
   price     Int?
 }
