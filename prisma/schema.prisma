@@ -42,6 +42,7 @@ model Item {
   description     String?
   group           Group      @relation(fields: [groupId], references: [id])
   groupId         Int
+  type            String?
   price           Int
   priceForSale    Int        @map("price_for_sale")
   code            Int
@@ -61,6 +62,9 @@ model Item {
   backDerailleur  String?    @map("back_derailleur")
   bushings        String?
   rubber          String?
+  wheelSize       String?    @map("wheel_size")
+  frameGrouve     String?    @map("frame_grouve")
+  amortization    String?
   itemCount       Int?       @default(0) @map("item_count")
   Receipt         Receipt[]
   Sale            Sale[]
