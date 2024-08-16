@@ -76,6 +76,10 @@ export const createNewItem = asyncHandler(async (req, res) => {
     bushings,
     rubber,
     itemCount,
+    type, 
+    wheelSize,
+    frameGrouve,
+    amortization,
   } = req.body;
 
   console.log("Received data:", req.body);
@@ -110,6 +114,10 @@ export const createNewItem = asyncHandler(async (req, res) => {
       bushings,
       rubber,
       itemCount, 
+      type, 
+      wheelSize,
+      frameGrouve,
+      amortization,
     },
   });
 
@@ -149,6 +157,10 @@ export const updateItem = asyncHandler(async (req, res) => {
     bushings,
     rubber,
     itemCount,
+    type, 
+    wheelSize,
+    frameGrouve,
+    amortization,
   } = req.body;
 
   try {
@@ -185,6 +197,10 @@ export const updateItem = asyncHandler(async (req, res) => {
         bushings,
         rubber,
         itemCount,
+        type, 
+        wheelSize,
+        frameGrouve,
+        amortization,
       },
     });
 
