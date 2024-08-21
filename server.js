@@ -20,6 +20,7 @@ import saleRoutes from "./app/sale/sale.routes.js";
 import writeOffRoutes from "./app/writeoff/writeoff.routes.js";
 import reportRoutes from "./app/report/report.routes.js";
 import turnoverRoutes from "./app/turnover/turnover.routes.js"
+import contragentRoutes from "./app/contragent/contragent.routes.js"
 
 dotenv.config();
 
@@ -88,6 +89,7 @@ async function main() {
   app.use("/api/writeoffs", writeOffRoutes);
   app.use("/api/reports", reportRoutes);
   app.use("/api/reports", turnoverRoutes);
+  app.use("/api/contragents", contragentRoutes)
 
   app.use(notFound);
   app.use(errorHandler);
