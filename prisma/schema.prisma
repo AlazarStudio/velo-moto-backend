@@ -65,10 +65,12 @@ model Item {
   wheelSize       String?    @map("wheel_size")
   frameGrouve     String?    @map("frame_grouve")
   amortization    String?
-  itemCount       Int?       @default(0) @map("item_count")
+  // itemCount       Int?       @default(0) @map("item_count")
   Receipt         Receipt[]
   Sale            Sale[]
   WriteOff        WriteOff[]
+  Warehouse       Warehouse?
+  Shop            Shop?
 }
 
 model Receipt {
@@ -103,11 +105,25 @@ model WriteOff {
 }
 
 model ContrAgent {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  name String
-  number String
-  email String
-  adress String
+  name      String
+  number    String
+  email     String
+  adress    String
+}
+
+model Warehouse {
+  id     Int  @id @default(autoincrement())
+  item   Item @relation(fields: [itemId], references: [id])
+  itemId Int  @unique
+  count  Int  @default(0)
+}
+
+model Shop {
+  id     Int  @id @default(autoincrement())
+  item   Item @relation(fields: [itemId], references: [id])
+  itemId Int  @unique
+  count  Int  @default(0)
 }

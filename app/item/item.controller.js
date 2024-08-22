@@ -15,6 +15,16 @@ export const getItems = asyncHandler(async (req, res) => {
           name: true,
         },
       },
+      Warehouse: {
+        select: {
+          count: true,
+        },
+      },
+      Shop: {
+        select: {
+          count: true,
+        },
+      },
     },
   });
   res.json(items);
@@ -30,6 +40,16 @@ export const getItem = asyncHandler(async (req, res) => {
       group: {
         select: {
           name: true,
+        },
+      },
+      Warehouse: {
+        select: {
+          count: true,
+        },
+      },
+      Shop: {
+        select: {
+          count: true,
         },
       },
     },
@@ -50,8 +70,8 @@ export const createNewItem = asyncHandler(async (req, res) => {
   const {
     name,
     color,
-    gender,        // Новое поле для пола
-    ageGroup,      // Новое поле для возрастной группы
+    gender, // Новое поле для пола
+    ageGroup, // Новое поле для возрастной группы
     location,
     images,
     description,
@@ -75,8 +95,8 @@ export const createNewItem = asyncHandler(async (req, res) => {
     backDerailleur,
     bushings,
     rubber,
-    itemCount,
-    type, 
+    // itemCount,
+    type,
     wheelSize,
     frameGrouve,
     amortization,
@@ -88,8 +108,8 @@ export const createNewItem = asyncHandler(async (req, res) => {
     data: {
       name,
       color,
-      gender,       // Добавлено поле gender
-      ageGroup,     // Добавлено поле ageGroup
+      gender, // Добавлено поле gender
+      ageGroup, // Добавлено поле ageGroup
       location,
       images,
       description,
@@ -113,11 +133,21 @@ export const createNewItem = asyncHandler(async (req, res) => {
       backDerailleur,
       bushings,
       rubber,
-      itemCount, 
-      type, 
+      // itemCount,
+      type,
       wheelSize,
       frameGrouve,
       amortization,
+      Warehouse: {
+        create: {
+          count: 0,
+        },
+      },
+      Shop: {
+        create: {
+          count: 0,
+        },
+      },
     },
   });
 
@@ -131,8 +161,8 @@ export const updateItem = asyncHandler(async (req, res) => {
   const {
     name,
     color,
-    gender,        // Новое поле для пола
-    ageGroup,      // Новое поле для возрастной группы
+    gender, // Новое поле для пола
+    ageGroup, // Новое поле для возрастной группы
     location,
     images,
     description,
@@ -156,8 +186,10 @@ export const updateItem = asyncHandler(async (req, res) => {
     backDerailleur,
     bushings,
     rubber,
-    itemCount,
-    type, 
+    // itemCount,
+    warehouseCount,
+    shopCount,
+    type,
     wheelSize,
     frameGrouve,
     amortization,
@@ -171,8 +203,8 @@ export const updateItem = asyncHandler(async (req, res) => {
       data: {
         name,
         color,
-        gender,       // Добавлено поле gender
-        ageGroup,     // Добавлено поле ageGroup
+        gender, // Добавлено поле gender
+        ageGroup, // Добавлено поле ageGroup
         location,
         images,
         description,
@@ -196,11 +228,21 @@ export const updateItem = asyncHandler(async (req, res) => {
         backDerailleur,
         bushings,
         rubber,
-        itemCount,
-        type, 
+        // itemCount,
+        type,
         wheelSize,
         frameGrouve,
         amortization,
+        Warehouse: {
+          update: {
+            count: warehouseCount,
+          },
+        },
+        Shop: {
+          update: {
+            count: shopCount,
+          },
+        },
       },
     });
 
