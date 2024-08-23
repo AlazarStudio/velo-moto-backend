@@ -5,7 +5,7 @@ import { prisma } from "../prisma.js";
 // @route   POST /api/writeoffs
 // @access  Private
 export const createWriteOff = asyncHandler(async (req, res) => {
-  const { itemId, quantity, reason, price } = req.body;
+  const { itemId, quantity, reason, price, source } = req.body; // Добавлено поле source
 
   const item = await prisma.item.findUnique({
     where: { id: parseInt(itemId) },
@@ -27,15 +27,47 @@ export const createWriteOff = asyncHandler(async (req, res) => {
     },
   });
 
-  // Update item count
-  await prisma.item.update({
-    where: { id: parseInt(itemId) },
-    data: {
-      itemCount: {
-        decrement: parseInt(quantity),
+  // Update item count based on source
+  if (source === 'store') {
+    const storeItem = await prisma.store.findUnique({
+      where: { itemId: parseInt(itemId) },
+    });
+
+    if (!storeItem || storeItem.count < parseInt(quantity)) {
+      res.status(400);
+      throw new Error('Not enough items in store!');
+    }
+
+    await prisma.store.update({
+      where: { itemId: parseInt(itemId) },
+      data: {
+        count: {
+          decrement: parseInt(quantity),
+        },
       },
-    },
-  });
+    });
+  } else if (source === 'warehouse') {
+    const warehouseItem = await prisma.warehouse.findUnique({
+      where: { itemId: parseInt(itemId) },
+    });
+
+    if (!warehouseItem || warehouseItem.count < parseInt(quantity)) {
+      res.status(400);
+      throw new Error('Not enough items in warehouse!');
+    }
+
+    await prisma.warehouse.update({
+      where: { itemId: parseInt(itemId) },
+      data: {
+        count: {
+          decrement: parseInt(quantity),
+        },
+      },
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid source. It must be either 'store' or 'warehouse'.");
+  }
 
   res.json(writeOff);
 });
@@ -51,3 +83,4 @@ export const getWriteOffs = asyncHandler(async (req, res) => {
   });
   res.json(writeOffs);
 });
+  

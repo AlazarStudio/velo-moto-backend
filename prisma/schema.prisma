@@ -37,7 +37,6 @@ model Item {
   color           String
   gender          String     @default("Unspecified")
   ageGroup        String     @default("Unspecified") @map("age_group")
-  location        String     @default("warehouse")
   images          String[]
   description     String?
   group           Group      @relation(fields: [groupId], references: [id])
@@ -84,13 +83,15 @@ model Receipt {
 }
 
 model Sale {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  itemId    Int
-  quantity  Int
-  price     Int?
+  id           Int         @id @default(autoincrement())
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  item         Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId       Int
+  quantity     Int
+  price        Int?
+  contrAgent   ContrAgent? @relation(fields: [contrAgentId], references: [id])
+  contrAgentId Int?
 }
 
 model WriteOff {
@@ -112,6 +113,7 @@ model ContrAgent {
   number    String
   email     String
   adress    String
+  Sale      Sale[]
 }
 
 model Warehouse {
