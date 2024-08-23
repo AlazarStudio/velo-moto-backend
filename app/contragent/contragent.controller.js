@@ -7,7 +7,7 @@ import { prisma } from '../prisma.js'
 // @route   GET /api/contragents
 // @access  Private
 export const getContragents = asyncHandler(async (req, res) => {
-	const contragents = await prisma.contragent.findMany({
+	const contragents = await prisma.contrAgent.findMany({
 		orderBy: {
 			createdAt: 'desc'
 		}
@@ -20,7 +20,7 @@ export const getContragents = asyncHandler(async (req, res) => {
 // @route   GET /api/contragents/:id
 // @access  Private
 export const getContragent = asyncHandler(async (req, res) => {
-	const contragent = await prisma.contragent.findUnique({
+	const contragent = await prisma.contrAgent.findUnique({
 		where: { id: +req.params.id }
 	})
 
@@ -39,7 +39,7 @@ export const getContragent = asyncHandler(async (req, res) => {
 export const createNewContragent = asyncHandler(async (req, res) => {
 	const { name, number, email, adress } = req.body
 
-	const contragent = await prisma.contragent.create({
+	const contragent = await prisma.contrAgent.create({
 		data: {
 			name, number, email, adress
 		}
@@ -56,7 +56,7 @@ export const updateContragent = asyncHandler(async (req, res) => {
 	const { name, number, email, adress } = req.body
 
 	try {
-		const contragent = await prisma.contragent.update({
+		const contragent = await prisma.contrAgent.update({
 			where: {
 				id: +req.params.id
 			},
@@ -78,7 +78,7 @@ export const updateContragent = asyncHandler(async (req, res) => {
 // @access  Private
 export const deleteContragent = asyncHandler(async (req, res) => {
 	try {
-		const contragent = await prisma.contragent.delete({
+		const contragent = await prisma.contrAgent.delete({
 			where: {
 				id: +req.params.id
 			}
