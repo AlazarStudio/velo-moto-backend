@@ -5,7 +5,7 @@ import { prisma } from "../prisma.js";
 // @route   POST /api/sales
 // @access  Private
 export const createSale = asyncHandler(async (req, res) => {
-  const { itemId, quantity, price, source } = req.body; // Добавлено поле source для указания откуда продается товар (store или warehouse)
+  const { itemId, quantity, price, source, buyerType, contrAgentId } = req.body; // Добавлено поле source, buyerType и contrAgentId
 
   const item = await prisma.item.findUnique({
     where: { id: parseInt(itemId) },
@@ -18,12 +18,33 @@ export const createSale = asyncHandler(async (req, res) => {
 
   const itemPrice = price ? parseInt(price) : item.priceForSale;
 
+  let saleData = {
+    itemId: parseInt(itemId),
+    quantity: parseInt(quantity),
+    price: itemPrice,
+  };
+
+  // Проверка на покупателя
+  if (buyerType === 'contrAgent') {
+    if (!contrAgentId) {
+      res.status(400);
+      throw new Error("ContrAgent ID is required for sales to contrAgents.");
+    }
+
+    const contrAgent = await prisma.contrAgent.findUnique({
+      where: { id: parseInt(contrAgentId) },
+    });
+
+    if (!contrAgent) {
+      res.status(404);
+      throw new Error("ContrAgent not found!");
+    }
+
+    saleData.contrAgentId = parseInt(contrAgentId);
+  }
+
   const sale = await prisma.sale.create({
-    data: {
-      itemId: parseInt(itemId),
-      quantity: parseInt(quantity),
-      price: itemPrice,
-    },
+    data: saleData,
   });
 
   // Обновление количества товара в зависимости от источника продажи
@@ -78,6 +99,7 @@ export const getSales = asyncHandler(async (req, res) => {
   const sales = await prisma.sale.findMany({
     include: {
       item: true,
+      contrAgent: true, // Включаем данные контрагента, если они есть
     },
   });
   res.json(sales);
