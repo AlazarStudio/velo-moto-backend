@@ -20,7 +20,7 @@ export const getItems = asyncHandler(async (req, res) => {
           count: true,
         },
       },
-      Shop: {
+      Store: {
         select: {
           count: true,
         },
@@ -47,7 +47,7 @@ export const getItem = asyncHandler(async (req, res) => {
           count: true,
         },
       },
-      Shop: {
+      Store: {
         select: {
           count: true,
         },
@@ -143,7 +143,7 @@ export const createNewItem = asyncHandler(async (req, res) => {
           count: 0,
         },
       },
-      Shop: {
+      Store: {
         create: {
           count: 0,
         },
@@ -188,7 +188,7 @@ export const updateItem = asyncHandler(async (req, res) => {
     rubber,
     // itemCount,
     warehouseCount,
-    shopCount,
+    storeCount,
     type,
     wheelSize,
     frameGrouve,
@@ -238,9 +238,9 @@ export const updateItem = asyncHandler(async (req, res) => {
             count: warehouseCount,
           },
         },
-        Shop: {
+        Store: {
           update: {
-            count: shopCount,
+            count: storeCount,
           },
         },
       },
@@ -261,7 +261,9 @@ export const deleteItem = asyncHandler(async (req, res) => {
     const item = await prisma.item.delete({
       where: {
         id: +req.params.id,
-      },
+      },  // TODO delete warehouse & store
+      
+
     });
 
     res.json({ message: "Item deleted!" });

@@ -9,7 +9,7 @@ import { prisma } from '../prisma.js'
 export const getWarehouses = asyncHandler(async (req, res) => {
 	const warehouses = await prisma.warehouse.findMany({
 		orderBy: {
-			createdAt: 'desc'
+			// createdAt: 'desc'
 		}
 	})
 	res.json(warehouses)

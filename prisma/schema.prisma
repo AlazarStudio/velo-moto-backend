@@ -70,14 +70,14 @@ model Item {
   Sale            Sale[]
   WriteOff        WriteOff[]
   Warehouse       Warehouse?
-  Shop            Shop?
+  Store           Store?
 }
 
 model Receipt {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  item      Item     @relation(fields: [itemId], references: [id])
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId    Int
   quantity  Int
   price     Int?
@@ -87,7 +87,7 @@ model Sale {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  item      Item     @relation(fields: [itemId], references: [id])
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId    Int
   quantity  Int
   price     Int?
@@ -97,7 +97,7 @@ model WriteOff {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  item      Item     @relation(fields: [itemId], references: [id])
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId    Int
   quantity  Int
   reason    String?
@@ -116,14 +116,14 @@ model ContrAgent {
 
 model Warehouse {
   id     Int  @id @default(autoincrement())
-  item   Item @relation(fields: [itemId], references: [id])
+  item   Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId Int  @unique
   count  Int  @default(0)
 }
 
-model Shop {
+model Store {
   id     Int  @id @default(autoincrement())
-  item   Item @relation(fields: [itemId], references: [id])
+  item   Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId Int  @unique
   count  Int  @default(0)
 }
