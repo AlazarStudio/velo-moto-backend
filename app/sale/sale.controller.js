@@ -30,7 +30,7 @@ export const createSale = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("ContrAgent ID is required for sales to contrAgents.");
     }
-
+    
     const contrAgent = await prisma.contrAgent.findUnique({
       where: { id: parseInt(contrAgentId) },
     });
