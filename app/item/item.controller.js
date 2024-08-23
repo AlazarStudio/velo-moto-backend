@@ -72,7 +72,6 @@ export const createNewItem = asyncHandler(async (req, res) => {
     color,
     gender, // Новое поле для пола
     ageGroup, // Новое поле для возрастной группы
-    location,
     images,
     description,
     groupId,
@@ -100,7 +99,12 @@ export const createNewItem = asyncHandler(async (req, res) => {
     wheelSize,
     frameGrouve,
     amortization,
+    warehouseCount,
+    storeCount,
   } = req.body;
+
+  const warehouseCountItem = warehouseCount ? parseInt(warehouseCount) : 0;
+  const storeCountItem = storeCount ? parseInt(storeCount) : 0;
 
   console.log("Received data:", req.body);
 
@@ -110,7 +114,6 @@ export const createNewItem = asyncHandler(async (req, res) => {
       color,
       gender, // Добавлено поле gender
       ageGroup, // Добавлено поле ageGroup
-      location,
       images,
       description,
       groupId: parseInt(groupId),
@@ -140,12 +143,12 @@ export const createNewItem = asyncHandler(async (req, res) => {
       amortization,
       Warehouse: {
         create: {
-          count: 0,
+          count: warehouseCountItem,
         },
       },
       Store: {
         create: {
-          count: 0,
+          count: storeCountItem,
         },
       },
     },
@@ -163,7 +166,6 @@ export const updateItem = asyncHandler(async (req, res) => {
     color,
     gender, // Новое поле для пола
     ageGroup, // Новое поле для возрастной группы
-    location,
     images,
     description,
     groupId,
@@ -205,7 +207,6 @@ export const updateItem = asyncHandler(async (req, res) => {
         color,
         gender, // Добавлено поле gender
         ageGroup, // Добавлено поле ageGroup
-        location,
         images,
         description,
         groupId: parseInt(groupId),
@@ -261,9 +262,7 @@ export const deleteItem = asyncHandler(async (req, res) => {
     const item = await prisma.item.delete({
       where: {
         id: +req.params.id,
-      },  // TODO delete warehouse & store
-      
-
+      }, // TODO delete warehouse & store
     });
 
     res.json({ message: "Item deleted!" });
