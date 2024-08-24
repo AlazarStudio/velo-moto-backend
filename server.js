@@ -67,15 +67,27 @@ async function main() {
 
   const __dirname = path.resolve();
 
-  app.post("/api/upload", upload.single("image"), (req, res) => {
+  // app.post("/api/upload", upload.single("image"), (req, res) => {
+  //   try {
+  //     console.log("File received:", req.file);
+  //     res.json({ filePath: `/uploads/${req.file.filename}` });
+  //   } catch (error) {
+  //     console.error("Error during file upload:", error);
+  //     res.status(500).send("Error uploading file");
+  //   }
+  // });
+
+  app.post("/api/upload", upload.array("images", 10), (req, res) => {
     try {
-      console.log("File received:", req.file);
-      res.json({ filePath: `/uploads/${req.file.filename}` });
+      console.log("Files received:", req.files);
+      const filePaths = req.files.map(file => `/uploads/${file.filename}`);
+      res.json({ filePaths });
     } catch (error) {
       console.error("Error during file upload:", error);
-      res.status(500).send("Error uploading file");
+      res.status(500).send("Error uploading files");
     }
   });
+  
 
   app.use("/uploads", express.static(path.join(__dirname, "/uploads/")));
 
@@ -96,7 +108,7 @@ async function main() {
   app.use(notFound);
   app.use(errorHandler);
 
-  const PORT = process.env.PORT || 5000;
+  const PORT = process.env.PORT || 4000;
 
   app.listen(
     PORT,
