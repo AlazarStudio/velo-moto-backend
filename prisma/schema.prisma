@@ -21,6 +21,7 @@ model User {
   login     String   @unique
   name      String
   password  String
+  Cart      Cart[]
 }
 
 model Group {
@@ -70,6 +71,7 @@ model Item {
   WriteOff        WriteOff[]
   Warehouse       Warehouse?
   Store           Store?
+  Cart            Cart[]
 }
 
 model Receipt {
@@ -128,4 +130,15 @@ model Store {
   item   Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId Int  @unique
   count  Int  @default(0)
+}
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  userId    Int // Ссылка на пользователя, который добавил товар
+  itemId    Int // Ссылка на товар
+  quantity  Int // Количество товара
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
