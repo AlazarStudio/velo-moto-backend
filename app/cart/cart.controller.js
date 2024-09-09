@@ -68,7 +68,7 @@ export const updateCartItem = asyncHandler(async (req, res) => {
 
 export const confirmSale = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const { saleTo } = req.body; // Получаем информацию о том, кому продаём (контрагент или покупатель)
+  const { saleTo, saleFrom, contrAgentId } = req.body; // Получаем информацию о том, кому продаём (контрагент или покупатель)
 
   // Проверка, что передан корректный тип продажи
   if (!['contractor', 'customer'].includes(saleTo)) {
@@ -95,20 +95,22 @@ export const confirmSale = asyncHandler(async (req, res) => {
         itemId: cartItem.itemId,
         quantity: cartItem.quantity,
         price: cartItem.Item.priceForSale,
+        source: saleFrom, 
+        buyerType: saleTo, 
+        contrAgentId: contrAgentId
         // Можно добавить дополнительные данные
       },
     });
 
-    // Определяем откуда списывать товар в зависимости от контрагента или покупателя
-    if (saleTo === 'contractor') {
+    if (saleFrom === 'warehouse') {
       // Списание со склада
       await prisma.warehouse.update({
         where: { itemId: cartItem.itemId },
         data: { count: { decrement: cartItem.quantity } },
       });
-    } else if (saleTo === 'customer') {
+    } else if (saleFrom === 'store') {
       // Списание из магазина
-      await prisma.shop.update({
+      await prisma.store.update({
         where: { itemId: cartItem.itemId },
         data: { count: { decrement: cartItem.quantity } },
       });
