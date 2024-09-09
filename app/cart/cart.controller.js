@@ -68,9 +68,19 @@ export const updateCartItem = asyncHandler(async (req, res) => {
 
 export const confirmSale = asyncHandler(async (req, res) => {
   const userId = req.user.id;
+  const { saleTo } = req.body; // Получаем информацию о том, кому продаём (контрагент или покупатель)
+
+  // Проверка, что передан корректный тип продажи
+  if (!['contractor', 'customer'].includes(saleTo)) {
+    res.status(400);
+    throw new Error("Некорректный тип продажи. Укажите 'contractor' или 'customer'.");
+  }
 
   const cartItems = await prisma.cart.findMany({
     where: { userId },
+    include: {
+      Item: true, // Подключаем товар, чтобы получить доступ к цене и другой информации
+    },
   });
 
   if (!cartItems.length) {
@@ -89,15 +99,24 @@ export const confirmSale = asyncHandler(async (req, res) => {
       },
     });
 
-    // Обновление количества товара на складе или в магазине
-    await prisma.store.update({
-      where: { itemId: cartItem.itemId },
-      data: { count: { decrement: cartItem.quantity } },
-    });
+    // Определяем откуда списывать товар в зависимости от контрагента или покупателя
+    if (saleTo === 'contractor') {
+      // Списание со склада
+      await prisma.warehouse.update({
+        where: { itemId: cartItem.itemId },
+        data: { count: { decrement: cartItem.quantity } },
+      });
+    } else if (saleTo === 'customer') {
+      // Списание из магазина
+      await prisma.shop.update({
+        where: { itemId: cartItem.itemId },
+        data: { count: { decrement: cartItem.quantity } },
+      });
+    }
 
     // Удаление товара из корзины после продажи
     await prisma.cart.delete({ where: { id: cartItem.id } });
   }
 
-  res.json({ message: "Продажа успешно подтверждена" });
+  res.json({ message: `Продажа успешно подтверждена для ${saleTo === 'contractor' ? 'контрагента' : 'покупателя'}` });
 });
