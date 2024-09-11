@@ -102,19 +102,19 @@ export const confirmSale = asyncHandler(async (req, res) => {
       },
     });
 
-    if (saleFrom === 'warehouse') {
-      // Списание со склада
-      await prisma.warehouse.update({
-        where: { itemId: cartItem.itemId },
-        data: { count: { decrement: cartItem.quantity } },
-      });
-    } else if (saleFrom === 'store') {
-      // Списание из магазина
-      await prisma.store.update({
-        where: { itemId: cartItem.itemId },
-        data: { count: { decrement: cartItem.quantity } },
-      });
-    }
+    // if (saleFrom === 'warehouse') {
+    //   // Списание со склада
+    //   await prisma.warehouse.update({
+    //     where: { itemId: cartItem.itemId },
+    //     data: { count: { decrement: cartItem.quantity } },
+    //   });
+    // } else if (saleFrom === 'store') {
+    //   // Списание из магазина
+    //   await prisma.store.update({
+    //     where: { itemId: cartItem.itemId },
+    //     data: { count: { decrement: cartItem.quantity } },
+    //   });
+    // }
 
     // Удаление товара из корзины после продажи
     await prisma.cart.delete({ where: { id: cartItem.id } });
