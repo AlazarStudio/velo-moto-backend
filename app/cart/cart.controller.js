@@ -4,7 +4,7 @@ import { prisma } from '../prisma.js'
 
 
 export const addItemToCart = asyncHandler(async (req, res) => {
-  const { itemId, quantity } = req.body;
+  const { itemId, quantity, contrAgentId } = req.body;
   const userId = req.user.id; // Предполагается, что есть аутентификация пользователя
 
   const item = await prisma.item.findUnique({ where: { id: itemId } });
@@ -21,6 +21,7 @@ export const addItemToCart = asyncHandler(async (req, res) => {
       userId,
       itemId,
       quantity,
+      contrAgentId
     },
   });
 
@@ -98,25 +99,9 @@ export const confirmSale = asyncHandler(async (req, res) => {
         source: saleFrom, 
         buyerType: saleTo, 
         contrAgentId: contrAgentId
-        // Можно добавить дополнительные данные
       },
     });
 
-    // if (saleFrom === 'warehouse') {
-    //   // Списание со склада
-    //   await prisma.warehouse.update({
-    //     where: { itemId: cartItem.itemId },
-    //     data: { count: { decrement: cartItem.quantity } },
-    //   });
-    // } else if (saleFrom === 'store') {
-    //   // Списание из магазина
-    //   await prisma.store.update({
-    //     where: { itemId: cartItem.itemId },
-    //     data: { count: { decrement: cartItem.quantity } },
-    //   });
-    // }
-
-    // Удаление товара из корзины после продажи
     await prisma.cart.delete({ where: { id: cartItem.id } });
   }
 

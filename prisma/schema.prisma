@@ -116,6 +116,7 @@ model ContrAgent {
   email     String
   adress    String
   Sale      Sale[]
+  Cart      Cart[]
 }
 
 model Warehouse {
@@ -133,12 +134,14 @@ model Store {
 }
 
 model Cart {
-  id        Int      @id @default(autoincrement())
-  userId    Int // Ссылка на пользователя, который добавил товар
-  itemId    Int // Ссылка на товар
-  quantity  Int // Количество товара
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           Int         @id @default(autoincrement())
+  userId       Int 
+  itemId       Int 
+  quantity     Int 
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  Item         Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  User         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contrAgent   ContrAgent? @relation(fields: [contrAgentId], references: [id])
+  contrAgentId Int?
 }

@@ -22,6 +22,7 @@ import reportRoutes from "./app/report/report.routes.js";
 import turnoverRoutes from "./app/turnover/turnover.routes.js"
 import contragentRoutes from "./app/contragent/contragent.routes.js"
 import transferRoutes from './app/transfer/transfer.routes.js';
+import cartRoutes from './app/cart/cart.routes.js'
 
 dotenv.config();
 
@@ -104,6 +105,7 @@ async function main() {
   app.use("/api/reports", turnoverRoutes);
   app.use("/api/contragents", contragentRoutes)
   app.use('/api/transfer', transferRoutes);
+  app.use('/api/cart', cartRoutes);
 
   app.use(notFound);
   app.use(errorHandler);
