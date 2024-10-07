@@ -3,8 +3,8 @@ import asyncHandler from "express-async-handler";
 import { prisma } from "../prisma.js";
 
 export const addItemToCart = asyncHandler(async (req, res) => {
-  const { itemId, quantity, buyertype, contrAgentId } = req.body;
-  const userId = req.user.id;
+  const { userId, itemId, quantity, buyertype, contrAgentId } = req.body;
+  // const userId = req.user.id;
 
   // Проверка валидности buyertype
   if (!["contractor", "customer"].includes(buyertype)) {
@@ -45,7 +45,7 @@ export const getCartItemsCustomer = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
   const cartItems = await prisma.cart.findMany({
-    where: { userId, buyertype },
+    where: { userId, buyertype: "customer" },
     include: {
       Item: true,
     },
@@ -58,7 +58,7 @@ export const getCartItemsContractor = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
   const cartItems = await prisma.cart.findMany({
-    where: { userId, buyertype  },
+    where: { userId, buyertype: "contractor"  },
     include: {
       Item: true,
     },

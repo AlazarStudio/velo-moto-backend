@@ -141,13 +141,13 @@ model Store {
 
 model Cart {
   id           Int         @id @default(autoincrement())
-  userId       Int
+  userId       Int?
   itemId       Int
   quantity     Int
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   Item         Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  User         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User         User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   contrAgent   ContrAgent? @relation(fields: [contrAgentId], references: [id])
   contrAgentId Int?
   buyertype    Buyer
