@@ -4,7 +4,8 @@ import { protect } from "../middleware/auth.middleware.js";
 
 import {
   addItemToCart,
-  getCartItems,
+  getCartItemsCustomer,
+  getCartItemsContractor,
   removeItemFromCart,
   updateCartItem,
   confirmSale
@@ -12,8 +13,8 @@ import {
 
 const router = express.Router();
 
-// router.route("/").post(protect, addItemToCart).get(protect, getCartItems);
-router.route("/").post(addItemToCart).get(getCartItems);
+// router.route("/").post(protect, addItemToCart).get(protect, getCartItemsCustomer).get(protect, getCartItemsContractor);
+router.route("/").post(addItemToCart).get(getCartItemsCustomer).get(getCartItemsContractor);
 
 // router
 //   .route("/:id")

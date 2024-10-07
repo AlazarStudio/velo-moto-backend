@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Buyer {
+  contractor
+  customer
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -94,6 +99,7 @@ model Sale {
   price        Int?
   contrAgent   ContrAgent? @relation(fields: [contrAgentId], references: [id])
   contrAgentId Int?
+  buyertype    Buyer
 }
 
 model WriteOff {
@@ -135,13 +141,16 @@ model Store {
 
 model Cart {
   id           Int         @id @default(autoincrement())
-  userId       Int 
-  itemId       Int 
-  quantity     Int 
+  userId       Int
+  itemId       Int
+  quantity     Int
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   Item         Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
   User         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   contrAgent   ContrAgent? @relation(fields: [contrAgentId], references: [id])
   contrAgentId Int?
+  buyertype    Buyer
+
+  @@unique([userId, itemId, buyertype])
 }
