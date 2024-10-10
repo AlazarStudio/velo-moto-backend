@@ -12,10 +12,10 @@ import {
 
 const router = express.Router()
 
-// router.route('/').post(protect, createNewItem).get(getItems)
-router.route('/').post(createNewItem).get(getItems)
+router.route('/').post(protect, createNewItem).get(getItems)
+// router.route('/').post(createNewItem).get(getItems)
 
-// router.route('/:id').get(getItem).put(protect, updateItem).delete(protect, deleteItem)
-router.route('/:id').get(getItem).put(updateItem).delete(deleteItem)
+router.route('/:id').get(getItem).put(protect, updateItem).delete(protect, deleteItem)
+// router.route('/:id').get(getItem).put(updateItem).delete(deleteItem)
 
 export default router

@@ -12,18 +12,18 @@ import {
 
 const router = express.Router()
 
-// router.route('/').post(protect, createNewGroup).get(getGroups)
-router.route('/').post(createNewGroup).get(getGroups)
+router.route('/').post(protect, createNewGroup).get(getGroups)
+// router.route('/').post(createNewGroup).get(getGroups)
 
-// router
-// 	.route('/:id')
-// 	.get(getGroup)
-// 	.put(protect, updateGroup)
-// 	.delete(protect, deleteGroup)
 router
 	.route('/:id')
 	.get(getGroup)
-	.put(updateGroup)
-	.delete(deleteGroup)
+	.put(protect, updateGroup)
+	.delete(protect, deleteGroup)
+// router
+// 	.route('/:id')
+// 	.get(getGroup)
+// 	.put(updateGroup)
+// 	.delete(deleteGroup)
 
 export default router

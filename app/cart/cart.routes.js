@@ -13,22 +13,20 @@ import {
 
 const router = express.Router();
 
-// router.route("/").post(protect, addItemToCart).get(protect, getCartItemsCustomer).get(protect, getCartItemsContractor);
-router.route("/").post(addItemToCart)
-router.route("/Customer").get(getCartItemsCustomer)
-router.route("/Contractor").get(getCartItemsContractor);
+router.route("/").post(protect, addItemToCart)
+router.route("/Customer").get(protect, getCartItemsCustomer)
+router.route("/Contractor").get(protect, getCartItemsContractor);
 
-
-
-// router
-//   .route("/:id")
-//   .delete(protect, removeItemFromCart)
-//   .put(protect, updateCartItem);
 
 router
   .route("/:id")
-  .delete(removeItemFromCart)
-  .put(updateCartItem);
+  .delete(protect, removeItemFromCart)
+  .put(protect, updateCartItem);
+
+// router
+//   .route("/:id")
+//   .delete(removeItemFromCart)
+//   .put(updateCartItem);
 
 // router.post("/confirm-sale", protect, confirmSale);
 

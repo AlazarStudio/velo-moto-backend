@@ -4,7 +4,7 @@ import { createSale, getSales } from './sale.controller.js'
 
 const router = express.Router()
 
-// router.route('/').post(protect, createSale).get(protect, getSales)
-router.route('/').post(createSale).get(getSales)
+router.route('/').post(protect, createSale).get(protect, getSales)
+// router.route('/').post(createSale).get(getSales)
 
 export default router
