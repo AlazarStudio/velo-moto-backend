@@ -14,7 +14,11 @@ import {
 const router = express.Router();
 
 // router.route("/").post(protect, addItemToCart).get(protect, getCartItemsCustomer).get(protect, getCartItemsContractor);
-router.route("/").post(addItemToCart).get(getCartItemsCustomer).get(getCartItemsContractor);
+router.route("/").post(addItemToCart)
+router.route("/Customer").get(getCartItemsCustomer)
+router.route("/Contractor").get(getCartItemsContractor);
+
+
 
 // router
 //   .route("/:id")
