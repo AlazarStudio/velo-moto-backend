@@ -13,10 +13,10 @@ export const addItemToCart = asyncHandler(async (req, res) => {
   }
 
   // Требование contrAgentId, если покупатель — контрагент
-  if (buyertype === "contractor" && !contrAgentId) {
-    res.status(400);
-    throw new Error("Необходимо указать ID контрагента для типа покупателя 'contractor'.");
-  }
+  // if (buyertype === "contractor" && !contrAgentId) {
+  //   res.status(400);
+  //   throw new Error("Необходимо указать ID контрагента для типа покупателя 'contractor'.");
+  // }
 
   const item = await prisma.item.findUnique({ where: { id: itemId } });
 
@@ -33,7 +33,7 @@ export const addItemToCart = asyncHandler(async (req, res) => {
       itemId,
       quantity,
       buyertype,
-      contrAgentId: buyertype === "contractor" ? contrAgentId : null,
+      contrAgentId: buyertype === "contractor" ? contrAgentId || null : null
     },
   });
 
