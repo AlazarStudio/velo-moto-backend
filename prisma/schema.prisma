@@ -100,6 +100,7 @@ model Sale {
   contrAgent   ContrAgent? @relation(fields: [contrAgentId], references: [id])
   contrAgentId Int?
   buyertype    Buyer
+  source       String
 }
 
 model WriteOff {

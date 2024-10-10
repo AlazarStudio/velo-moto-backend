@@ -28,8 +28,8 @@ router
 //   .delete(removeItemFromCart)
 //   .put(updateCartItem);
 
-// router.post("/confirm-sale", protect, confirmSale);
+router.post("/confirm-sale", protect, confirmSale);
 
-router.post("/confirm-sale", confirmSale);
+// router.post("/confirm-sale", confirmSale);
 
 export default router;

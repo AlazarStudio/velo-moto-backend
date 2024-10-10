@@ -102,7 +102,7 @@ export const updateCartItem = asyncHandler(async (req, res) => {
 
 export const confirmSale = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const { buyertype, saleFrom, contrAgentId } = req.body;
+  const { buyertype, saleFrom, contrAgentId, price } = req.body;
 
   // Проверка валидности buyertype
   if (!["contractor", "customer"].includes(buyertype)) {
@@ -134,12 +134,54 @@ export const confirmSale = asyncHandler(async (req, res) => {
       data: {
         itemId: cartItem.itemId,
         quantity: cartItem.quantity,
-        price: cartItem.Item.priceForSale,
+        price: price ? price : cartItem.Item.priceForSale,
         source: saleFrom,
-        buyerType: buyertype,
+        buyertype: buyertype,
         contrAgentId: buyertype === "contractor" ? contrAgentId : null,
       },
     });
+
+      // Обновление количества товара в зависимости от источника продажи
+  if (saleFrom === 'store') {
+    const storeItem = await prisma.store.findUnique({
+      where: { itemId: parseInt(cartItem.itemId) },
+    });
+
+    if (!storeItem || storeItem.count < parseInt(cartItem.quantity)) {
+      res.status(400);
+      throw new Error('Not enough items in store!');
+    }
+
+    await prisma.store.update({
+      where: { itemId: parseInt(cartItem.itemId) },
+      data: {
+        count: {
+          decrement: parseInt(cartItem.quantity),
+        },
+      },
+    });
+  } else if (saleFrom === 'warehouse') {
+    const warehouseItem = await prisma.warehouse.findUnique({
+      where: { itemId: parseInt(cartItem.itemId) },
+    });
+
+    if (!warehouseItem || warehouseItem.count < parseInt(cartItem.quantity)) {
+      res.status(400);
+      throw new Error('Not enough items in warehouse!');
+    }
+
+    await prisma.warehouse.update({
+      where: { itemId: parseInt(cartItem.itemId) },
+      data: {
+        count: {
+          decrement: parseInt(cartItem.quantity),
+        },
+      },
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid source. It must be either 'store' or 'warehouse'.");
+  }
 
     // Удаляем товар из корзины после продажи
     await prisma.cart.delete({ where: { id: cartItem.id } });
