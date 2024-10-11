@@ -9,7 +9,9 @@ export const addItemToCart = asyncHandler(async (req, res) => {
   // Проверка валидности buyertype
   if (!["contractor", "customer"].includes(buyertype)) {
     res.status(400);
-    throw new Error("Некорректный тип покупателя. Укажите 'contractor' или 'customer'.");
+    throw new Error(
+      "Некорректный тип покупателя. Укажите 'contractor' или 'customer'."
+    );
   }
 
   // Требование contrAgentId, если покупатель — контрагент
@@ -33,18 +35,17 @@ export const addItemToCart = asyncHandler(async (req, res) => {
       itemId,
       quantity,
       buyertype,
-      contrAgentId: buyertype === "contractor" ? contrAgentId || null : null
+      contrAgentId: buyertype === "contractor" ? contrAgentId || null : null,
     },
   });
 
   res.json(cartItem);
 });
 
-
 export const getCartItemsCustomer = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
-  console.log("req", req)
+  console.log("req", req);
 
   const cartItems = await prisma.cart.findMany({
     where: { userId, buyertype: "customer" },
@@ -59,10 +60,10 @@ export const getCartItemsCustomer = asyncHandler(async (req, res) => {
 export const getCartItemsContractor = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
-  console.log("req", req)
+  console.log("req", req);
 
   const cartItems = await prisma.cart.findMany({
-    where: { userId, buyertype: "contractor"  },
+    where: { userId, buyertype: "contractor" },
     include: {
       Item: true,
     },
@@ -86,7 +87,6 @@ export const removeItemFromCart = asyncHandler(async (req, res) => {
   res.json({ message: "Товар удален из корзины" });
 });
 
-
 export const updateCartItem = asyncHandler(async (req, res) => {
   const { itemId, quantity, buyertype } = req.body;
   const userId = req.user.id;
@@ -99,7 +99,6 @@ export const updateCartItem = asyncHandler(async (req, res) => {
   res.json(cartItem);
 });
 
-
 export const confirmSale = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const { buyertype, saleFrom, contrAgentId, price } = req.body;
@@ -107,13 +106,17 @@ export const confirmSale = asyncHandler(async (req, res) => {
   // Проверка валидности buyertype
   if (!["contractor", "customer"].includes(buyertype)) {
     res.status(400);
-    throw new Error("Некорректный тип покупателя. Укажите 'contractor' или 'customer'.");
+    throw new Error(
+      "Некорректный тип покупателя. Укажите 'contractor' или 'customer'."
+    );
   }
 
   // Требование contrAgentId, если покупатель — контрагент
   if (buyertype === "contractor" && !contrAgentId) {
     res.status(400);
-    throw new Error("Необходимо указать ID контрагента для типа покупателя 'contractor'.");
+    throw new Error(
+      "Необходимо указать ID контрагента для типа покупателя 'contractor'."
+    );
   }
 
   const cartItems = await prisma.cart.findMany({
@@ -141,47 +144,49 @@ export const confirmSale = asyncHandler(async (req, res) => {
       },
     });
 
-      // Обновление количества товара в зависимости от источника продажи
-  if (saleFrom === 'store') {
-    const storeItem = await prisma.store.findUnique({
-      where: { itemId: parseInt(cartItem.itemId) },
-    });
+    // Обновление количества товара в зависимости от источника продажи
+    if (saleFrom === "store") {
+      const storeItem = await prisma.store.findUnique({
+        where: { itemId: parseInt(cartItem.itemId) },
+      });
 
-    if (!storeItem || storeItem.count < parseInt(cartItem.quantity)) {
-      res.status(400);
-      throw new Error('Not enough items in store!');
-    }
+      if (!storeItem || storeItem.count < parseInt(cartItem.quantity)) {
+        res.status(400);
+        throw new Error("Not enough items in store!");
+      }
 
-    await prisma.store.update({
-      where: { itemId: parseInt(cartItem.itemId) },
-      data: {
-        count: {
-          decrement: parseInt(cartItem.quantity),
+      await prisma.store.update({
+        where: { itemId: parseInt(cartItem.itemId) },
+        data: {
+          count: {
+            decrement: parseInt(cartItem.quantity),
+          },
         },
-      },
-    });
-  } else if (saleFrom === 'warehouse') {
-    const warehouseItem = await prisma.warehouse.findUnique({
-      where: { itemId: parseInt(cartItem.itemId) },
-    });
+      });
+    } else if (saleFrom === "warehouse") {
+      const warehouseItem = await prisma.warehouse.findUnique({
+        where: { itemId: parseInt(cartItem.itemId) },
+      });
 
-    if (!warehouseItem || warehouseItem.count < parseInt(cartItem.quantity)) {
-      res.status(400);
-      throw new Error('Not enough items in warehouse!');
-    }
+      if (!warehouseItem || warehouseItem.count < parseInt(cartItem.quantity)) {
+        res.status(400);
+        throw new Error("Not enough items in warehouse!");
+      }
 
-    await prisma.warehouse.update({
-      where: { itemId: parseInt(cartItem.itemId) },
-      data: {
-        count: {
-          decrement: parseInt(cartItem.quantity),
+      await prisma.warehouse.update({
+        where: { itemId: parseInt(cartItem.itemId) },
+        data: {
+          count: {
+            decrement: parseInt(cartItem.quantity),
+          },
         },
-      },
-    });
-  } else {
-    res.status(400);
-    throw new Error("Invalid source. It must be either 'store' or 'warehouse'.");
-  }
+      });
+    } else {
+      res.status(400);
+      throw new Error(
+        "Invalid source. It must be either 'store' or 'warehouse'."
+      );
+    }
 
     // Удаляем товар из корзины после продажи
     await prisma.cart.delete({ where: { id: cartItem.id } });
