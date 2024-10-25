@@ -73,14 +73,38 @@ export const getCartItemsContractor = asyncHandler(async (req, res) => {
 });
 
 export const removeItemFromCart = asyncHandler(async (req, res) => {
-  const { itemId, buyertype } = req.body;
+  // const { itemId, buyertype } = req.body;
+  // const userId = req.user.id;
+
+  // await prisma.cart.deleteMany({
+  //   where: {
+  //     userId,
+  //     itemId,
+  //     buyertype,
+  //   },
+  // });
+
+  const { id } = req.params; // Получаем ID товара из параметров запроса
   const userId = req.user.id;
 
-  await prisma.cart.deleteMany({
+  const cartItem = await prisma.cart.findUnique({
     where: {
-      userId,
-      itemId,
-      buyertype,
+      id: parseInt(id),
+    },
+  });
+
+  // Проверяем, существует ли товар и принадлежит ли он текущему пользователю
+  if (!cartItem || cartItem.userId !== userId) {
+    res.status(404);
+    throw new Error(
+      "Товар не найден в корзине или вы не авторизованы для его удаления"
+    );
+  }
+
+  // Удаляем конкретный товар по его ID
+  await prisma.cart.delete({
+    where: {
+      id: parseInt(id),
     },
   });
 
