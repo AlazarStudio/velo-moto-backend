@@ -45,7 +45,7 @@ export const addItemToCart = asyncHandler(async (req, res) => {
 export const getCartItemsCustomer = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
-  console.log("req", req);
+  // console.log("req", req);
 
   const cartItems = await prisma.cart.findMany({
     where: { userId, buyertype: "customer" },
@@ -60,7 +60,7 @@ export const getCartItemsCustomer = asyncHandler(async (req, res) => {
 export const getCartItemsContractor = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
-  console.log("req", req);
+  // console.log("req", req);
 
   const cartItems = await prisma.cart.findMany({
     where: { userId, buyertype: "contractor" },
