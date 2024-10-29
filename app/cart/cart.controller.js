@@ -125,29 +125,21 @@ export const updateCartItem = asyncHandler(async (req, res) => {
 
 export const confirmSale = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const { buyertype, saleFrom, contrAgentId, price } = req.body;
+  const { buyertype, saleFrom, contrAgentId, customPrices } = req.body; // customPrices передаётся как объект цен
 
-  // Проверка валидности buyertype
   if (!["contractor", "customer"].includes(buyertype)) {
     res.status(400);
-    throw new Error(
-      "Некорректный тип покупателя. Укажите 'contractor' или 'customer'."
-    );
+    throw new Error("Некорректный тип покупателя. Укажите 'contractor' или 'customer'.");
   }
 
-  // Требование contrAgentId, если покупатель — контрагент
   if (buyertype === "contractor" && !contrAgentId) {
     res.status(400);
-    throw new Error(
-      "Необходимо указать ID контрагента для типа покупателя 'contractor'."
-    );
+    throw new Error("Необходимо указать ID контрагента для типа покупателя 'contractor'.");
   }
 
   const cartItems = await prisma.cart.findMany({
     where: { userId, buyertype },
-    include: {
-      Item: true,
-    },
+    include: { Item: true },
   });
 
   if (!cartItems.length) {
@@ -155,70 +147,77 @@ export const confirmSale = asyncHandler(async (req, res) => {
     throw new Error("Корзина пуста");
   }
 
-  // Процесс продажи для каждого товара
-  for (const cartItem of cartItems) {
-    await prisma.sale.create({
-      data: {
-        itemId: cartItem.itemId,
-        quantity: cartItem.quantity,
-        price: price ? price : cartItem.Item.priceForSale,
-        source: saleFrom,
-        buyertype: buyertype,
-        contrAgentId: buyertype === "contractor" ? contrAgentId : null,
-      },
+  try {
+    await prisma.$transaction(async (prisma) => {
+      for (const cartItem of cartItems) {
+        // Используем индивидуальную цену, если она указана, иначе стандартную цену товара
+        const itemPrice = customPrices && customPrices[cartItem.itemId]
+          ? customPrices[cartItem.itemId]
+          : cartItem.Item.priceForSale;
+
+        // Создаем запись о продаже
+        await prisma.sale.create({
+          data: {
+            itemId: cartItem.itemId,
+            quantity: cartItem.quantity,
+            price: itemPrice,
+            source: saleFrom,
+            buyertype: buyertype,
+            contrAgentId: buyertype === "contractor" ? contrAgentId : null,
+          },
+        });
+
+        // Обновляем количество товара
+        if (saleFrom === "store") {
+          const storeItem = await prisma.store.findUnique({
+            where: { itemId: parseInt(cartItem.itemId) },
+          });
+
+          if (!storeItem || storeItem.count < cartItem.quantity) {
+            throw new Error("Not enough items in store!");
+          }
+
+          await prisma.store.update({
+            where: { itemId: parseInt(cartItem.itemId) },
+            data: {
+              count: {
+                decrement: cartItem.quantity,
+              },
+            },
+          });
+
+        } else if (saleFrom === "warehouse") {
+          const warehouseItem = await prisma.warehouse.findUnique({
+            where: { itemId: parseInt(cartItem.itemId) },
+          });
+
+          if (!warehouseItem || warehouseItem.count < cartItem.quantity) {
+            throw new Error("Not enough items in warehouse!");
+          }
+
+          await prisma.warehouse.update({
+            where: { itemId: parseInt(cartItem.itemId) },
+            data: {
+              count: {
+                decrement: cartItem.quantity,
+              },
+            },
+          });
+        } else {
+          throw new Error("Invalid source. It must be either 'store' or 'warehouse'.");
+        }
+
+        // Удаляем товар из корзины после продажи
+        await prisma.cart.delete({ where: { id: cartItem.id } });
+      }
     });
 
-    // Обновление количества товара в зависимости от источника продажи
-    if (saleFrom === "store") {
-      const storeItem = await prisma.store.findUnique({
-        where: { itemId: parseInt(cartItem.itemId) },
-      });
-
-      if (!storeItem || storeItem.count < parseInt(cartItem.quantity)) {
-        res.status(400);
-        throw new Error("Not enough items in store!");
-      }
-
-      await prisma.store.update({
-        where: { itemId: parseInt(cartItem.itemId) },
-        data: {
-          count: {
-            decrement: parseInt(cartItem.quantity),
-          },
-        },
-      });
-    } else if (saleFrom === "warehouse") {
-      const warehouseItem = await prisma.warehouse.findUnique({
-        where: { itemId: parseInt(cartItem.itemId) },
-      });
-
-      if (!warehouseItem || warehouseItem.count < parseInt(cartItem.quantity)) {
-        res.status(400);
-        throw new Error("Not enough items in warehouse!");
-      }
-
-      await prisma.warehouse.update({
-        where: { itemId: parseInt(cartItem.itemId) },
-        data: {
-          count: {
-            decrement: parseInt(cartItem.quantity),
-          },
-        },
-      });
-    } else {
-      res.status(400);
-      throw new Error(
-        "Invalid source. It must be either 'store' or 'warehouse'."
-      );
-    }
-
-    // Удаляем товар из корзины после продажи
-    await prisma.cart.delete({ where: { id: cartItem.id } });
+    res.json({
+      message: `Продажа успешно подтверждена для ${buyertype === "contractor" ? "контрагента" : "покупателя"}`,
+    });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
   }
-
-  res.json({
-    message: `Продажа успешно подтверждена для ${
-      buyertype === "contractor" ? "контрагента" : "покупателя"
-    }`,
-  });
 });
+
