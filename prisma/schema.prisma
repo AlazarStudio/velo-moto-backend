@@ -72,6 +72,8 @@ model Item {
   amortization     String?
   // --------------------------------
   motor            String?
+  saddleHeight     String?  @map("saddle_height")
+  maximumLoad      String?  @map("maximum_load")
   frontSuspension  String?  @map("front_suspension")
   rearSuspension   String?  @map("rear_suspension")
   fuelConsumption  String?  @map("fuel_consumption")
