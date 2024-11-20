@@ -36,23 +36,23 @@ model Group {
 }
 
 model Item {
-  id               Int      @id @default(autoincrement())
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
+  id               Int        @id @default(autoincrement())
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
   name             String
   color            String
-  gender           String   @default("Unspecified")
-  ageGroup         String   @default("Unspecified") @map("age_group")
+  gender           String     @default("Unspecified")
+  ageGroup         String     @default("Unspecified") @map("age_group")
   images           String[]
   description      String?
-  group            Group    @relation(fields: [groupId], references: [id])
+  group            Group      @relation(fields: [groupId], references: [id])
   groupId          Int
   type             String?
   price            Int
-  priceForSale     Int      @map("price_for_sale")
+  priceForSale     Int        @map("price_for_sale")
   code             Int
   barcode          String
-  nds              Int?     @default(0)
+  nds              Int?       @default(0)
   frame            String?
   system           String?
   size             String?
@@ -63,36 +63,36 @@ model Item {
   carriage         String?
   flywheels        String?
   breaks           String?
-  frontDerailleur  String?  @map("front_derailleur")
-  backDerailleur   String?  @map("back_derailleur")
+  frontDerailleur  String?    @map("front_derailleur")
+  backDerailleur   String?    @map("back_derailleur")
   bushings         String?
   rubber           String?
-  wheelSize        String?  @map("wheel_size")
-  frameGrouve      String?  @map("frame_grouve")
+  wheelSize        String?    @map("wheel_size")
+  frameGrouve      String?    @map("frame_grouve")
   amortization     String?
   // --------------------------------
   motor            String?
-  saddleHeight     String?  @map("saddle_height")
-  maximumLoad      String?  @map("maximum_load")
-  frontSuspension  String?  @map("front_suspension")
-  rearSuspension   String?  @map("rear_suspension")
-  fuelConsumption  String?  @map("fuel_consumption")
+  saddleHeight     String?    @map("saddle_height")
+  maximumLoad      String?    @map("maximum_load")
+  frontSuspension  String?    @map("front_suspension")
+  rearSuspension   String?    @map("rear_suspension")
+  fuelConsumption  String?    @map("fuel_consumption")
   starting         String?
   power            String?
   torque           String?
-  maxSpeed         String?  @map("max_speed")
+  maxSpeed         String?    @map("max_speed")
   transmission     String?
   wheelbase        String?
-  groundClearance  String?  @map("ground_clearance")
-  fuelTankCapacity String?  @map("fuel_tank_capacity")
-
+  groundClearance  String?    @map("ground_clearance")
+  fuelTankCapacity String?    @map("fuel_tank_capacity")
+  isProm           String?    @map("is_prom")
   // --------------------------------
-  Receipt   Receipt[]
-  Sale      Sale[]
-  WriteOff  WriteOff[]
-  Warehouse Warehouse?
-  Store     Store?
-  Cart      Cart[]
+  Receipt          Receipt[]
+  Sale             Sale[]
+  WriteOff         WriteOff[]
+  Warehouse        Warehouse?
+  Store            Store?
+  Cart             Cart[]
 }
 
 model Receipt {
