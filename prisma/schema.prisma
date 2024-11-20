@@ -84,8 +84,8 @@ model Item {
   transmission     String?
   wheelbase        String?
   groundClearance  String?    @map("ground_clearance")
-  isProm           String?    @map("is_prom")
   fuelTankCapacity String?    @map("fuel_tank_capacity")
+  isProm           String?    @map("is_prom")
   // --------------------------------
   Receipt          Receipt[]
   Sale             Sale[]
