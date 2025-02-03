@@ -1,23 +1,23 @@
-import express from 'express'
+import express from "express";
 
-import { protect, adminProtect } from '../middleware/auth.middleware.js'
+import { protect, adminProtect } from "../middleware/auth.middleware.js";
 
 import {
-	createNewWarehouse,
-	deleteWarehouse,
-	getWarehouse,
-	getWarehouses,
-	updateWarehouse
-} from './warehouse.controller.js'
+  createNewWarehouse,
+  deleteWarehouse,
+  getWarehouse,
+  getWarehouses,
+  updateWarehouse,
+} from "./warehouse.controller.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.route('/').post(protect, createNewWarehouse).get(protect, getWarehouses)
+router.route("/").post(protect, createNewWarehouse).get(protect, getWarehouses);
 
 router
-	.route('/:id')
-	.get(protect, getWarehouse)
-	.put(protect, updateWarehouse)
-	.delete(adminProtect, deleteWarehouse)
+  .route("/:id")
+  .get(protect, getWarehouse)
+  .put(protect, updateWarehouse)
+  .delete(adminProtect, deleteWarehouse);
 
-export default router
+export default router;

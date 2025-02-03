@@ -3,8 +3,8 @@ import express from "express";
 import morgan from "morgan";
 import multer from "multer";
 import path from "path";
-import fs from 'fs';
-import https from 'https';
+import fs from "fs";
+import https from "https";
 import cors from "cors";
 import { fileURLToPath } from "url";
 
@@ -21,10 +21,10 @@ import receiptRoutes from "./app/receipt/receipt.routes.js";
 import saleRoutes from "./app/sale/sale.routes.js";
 import writeOffRoutes from "./app/writeoff/writeoff.routes.js";
 import reportRoutes from "./app/report/report.routes.js";
-import turnoverRoutes from "./app/turnover/turnover.routes.js"
-import contragentRoutes from "./app/contragent/contragent.routes.js"
-import transferRoutes from './app/transfer/transfer.routes.js';
-import cartRoutes from './app/cart/cart.routes.js'
+import turnoverRoutes from "./app/turnover/turnover.routes.js";
+import contragentRoutes from "./app/contragent/contragent.routes.js";
+import transferRoutes from "./app/transfer/transfer.routes.js";
+import cartRoutes from "./app/cart/cart.routes.js";
 
 dotenv.config();
 
@@ -83,14 +83,13 @@ async function main() {
   app.post("/api/upload", upload.array("images", 10), (req, res) => {
     try {
       console.log("Files received:", req.files);
-      const filePaths = req.files.map(file => `/uploads/${file.filename}`);
+      const filePaths = req.files.map((file) => `/uploads/${file.filename}`);
       res.json({ filePaths });
     } catch (error) {
       console.error("Error during file upload:", error);
       res.status(500).send("Error uploading files");
     }
   });
-  
 
   app.use("/uploads", express.static(path.join(__dirname, "/uploads/")));
 
@@ -105,29 +104,29 @@ async function main() {
   app.use("/api/writeoffs", writeOffRoutes);
   app.use("/api/reports", reportRoutes);
   app.use("/api/reports", turnoverRoutes);
-  app.use("/api/contragents", contragentRoutes)
-  app.use('/api/transfer', transferRoutes);
-  app.use('/api/cart', cartRoutes);
+  app.use("/api/contragents", contragentRoutes);
+  app.use("/api/transfer", transferRoutes);
+  app.use("/api/cart", cartRoutes);
 
   app.use(notFound);
   app.use(errorHandler);
 
   // const PORT = process.env.PORT || 4000;
 
-  const PORT = process.env.PORT || 443
+  const PORT = process.env.PORT || 443;
 
-	const sslOptions = {
-		key: fs.readFileSync(
-			'../../../etc/letsencrypt/live/backend.velomotodrive-kchr.ru/privkey.pem'
-		),
-		cert: fs.readFileSync(
-			'../../../etc/letsencrypt/live/backend.velomotodrive-kchr.ru/fullchain.pem'
-		)
-	}
+  const sslOptions = {
+    key: fs.readFileSync(
+      "../../../etc/letsencrypt/live/backend.velomotodrive-kchr.ru/privkey.pem"
+    ),
+    cert: fs.readFileSync(
+      "../../../etc/letsencrypt/live/backend.velomotodrive-kchr.ru/fullchain.pem"
+    ),
+  };
 
-	https.createServer(sslOptions, app).listen(PORT, () => {
-		console.log(`HTTPS server running on port ${PORT}`)
-	})
+  https.createServer(sslOptions, app).listen(PORT, () => {
+    console.log(`HTTPS server running on port ${PORT}`);
+  });
 
   // app.listen(
   //   PORT,

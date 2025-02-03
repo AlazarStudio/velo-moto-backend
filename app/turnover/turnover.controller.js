@@ -121,13 +121,17 @@ export const getTurnoverReport = asyncHandler(async (req, res) => {
     );
 
     const totalWriteOffsAmount = periodWriteOffs.reduce(
-      (acc, writeOff) => acc + writeOff.quantity * (writeOff.price || item.price),
+      (acc, writeOff) =>
+        acc + writeOff.quantity * (writeOff.price || item.price),
       0
     );
 
     // Конечный остаток
     const finalQuantity =
-      initialQuantity + totalReceiptsQuantity - totalSalesQuantity - totalWriteOffsQuantity;
+      initialQuantity +
+      totalReceiptsQuantity -
+      totalSalesQuantity -
+      totalWriteOffsQuantity;
 
     // Добавляем данные по текущему товару в отчет
     reportData.push({

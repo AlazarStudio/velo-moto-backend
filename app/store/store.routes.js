@@ -1,23 +1,23 @@
-import express from 'express'
+import express from "express";
 
-import { protect } from '../middleware/auth.middleware.js'
+import { protect } from "../middleware/auth.middleware.js";
 
 import {
-	createNewStore,
-	deleteStore,
-	getStore,
-	getStores,
-	updateStore
-} from './store.controller.js'
+  createNewStore,
+  deleteStore,
+  getStore,
+  getStores,
+  updateStore,
+} from "./store.controller.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.route('/').post(protect, createNewStore).get(protect, getStores)
+router.route("/").post(protect, createNewStore).get(protect, getStores);
 
 router
-	.route('/:id')
-	.get(protect, getStore)
-	.put(protect, updateStore)
-	.delete(protect, deleteStore)
+  .route("/:id")
+  .get(protect, getStore)
+  .put(protect, updateStore)
+  .delete(protect, deleteStore);
 
-export default router
+export default router;

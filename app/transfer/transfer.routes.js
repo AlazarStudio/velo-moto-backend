@@ -1,13 +1,11 @@
-import express from 'express'
+import express from "express";
 
-import { protect } from '../middleware/auth.middleware.js'
+import { protect } from "../middleware/auth.middleware.js";
 
-import {
-	transferItem
-} from './transfer.controller.js'
+import { transferItem } from "./transfer.controller.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.route('/').post(protect, transferItem)
+router.route("/").post(protect, transferItem);
 
-export default router
+export default router;

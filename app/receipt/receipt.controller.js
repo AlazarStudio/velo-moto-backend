@@ -27,7 +27,7 @@ export const createReceipt = asyncHandler(async (req, res) => {
   });
 
   // Update item count based on source
-  if (source === 'store') {
+  if (source === "store") {
     await prisma.store.update({
       where: { itemId: parseInt(itemId) },
       data: {
@@ -36,7 +36,7 @@ export const createReceipt = asyncHandler(async (req, res) => {
         },
       },
     });
-  } else if (source === 'warehouse') {
+  } else if (source === "warehouse") {
     await prisma.warehouse.update({
       where: { itemId: parseInt(itemId) },
       data: {
@@ -47,7 +47,9 @@ export const createReceipt = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid source. It must be either 'store' or 'warehouse'.");
+    throw new Error(
+      "Invalid source. It must be either 'store' or 'warehouse'."
+    );
   }
 
   res.json(receipt);

@@ -25,12 +25,12 @@ export const createSale = asyncHandler(async (req, res) => {
   };
 
   // Проверка на покупателя
-  if (buyerType === 'contrAgent') {
+  if (buyerType === "contrAgent") {
     if (!contrAgentId) {
       res.status(400);
       throw new Error("ContrAgent ID is required for sales to contrAgents.");
     }
-    
+
     const contrAgent = await prisma.contrAgent.findUnique({
       where: { id: parseInt(contrAgentId) },
     });
@@ -48,14 +48,14 @@ export const createSale = asyncHandler(async (req, res) => {
   });
 
   // Обновление количества товара в зависимости от источника продажи
-  if (source === 'store') {
+  if (source === "store") {
     const storeItem = await prisma.store.findUnique({
       where: { itemId: parseInt(itemId) },
     });
 
     if (!storeItem || storeItem.count < parseInt(quantity)) {
       res.status(400);
-      throw new Error('Not enough items in store!');
+      throw new Error("Not enough items in store!");
     }
 
     await prisma.store.update({
@@ -66,14 +66,14 @@ export const createSale = asyncHandler(async (req, res) => {
         },
       },
     });
-  } else if (source === 'warehouse') {
+  } else if (source === "warehouse") {
     const warehouseItem = await prisma.warehouse.findUnique({
       where: { itemId: parseInt(itemId) },
     });
 
     if (!warehouseItem || warehouseItem.count < parseInt(quantity)) {
       res.status(400);
-      throw new Error('Not enough items in warehouse!');
+      throw new Error("Not enough items in warehouse!");
     }
 
     await prisma.warehouse.update({
@@ -86,7 +86,9 @@ export const createSale = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid source. It must be either 'store' or 'warehouse'.");
+    throw new Error(
+      "Invalid source. It must be either 'store' or 'warehouse'."
+    );
   }
 
   res.json(sale);

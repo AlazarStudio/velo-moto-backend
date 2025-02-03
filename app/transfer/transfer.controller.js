@@ -7,9 +7,14 @@ import { prisma } from "../prisma.js";
 export const transferItem = asyncHandler(async (req, res) => {
   const { itemId, quantity, from, to } = req.body; // from и to указывают на источник и цель (warehouse или store)
 
-  if (!['store', 'warehouse'].includes(from) || !['store', 'warehouse'].includes(to)) {
+  if (
+    !["store", "warehouse"].includes(from) ||
+    !["store", "warehouse"].includes(to)
+  ) {
     res.status(400);
-    throw new Error("Invalid source or destination. They must be either 'store' or 'warehouse'.");
+    throw new Error(
+      "Invalid source or destination. They must be either 'store' or 'warehouse'."
+    );
   }
 
   if (from === to) {
@@ -28,11 +33,11 @@ export const transferItem = asyncHandler(async (req, res) => {
 
   // Определяем исходный источник
   let source;
-  if (from === 'store') {
+  if (from === "store") {
     source = await prisma.store.findUnique({
       where: { itemId: parseInt(itemId) },
     });
-  } else if (from === 'warehouse') {
+  } else if (from === "warehouse") {
     source = await prisma.warehouse.findUnique({
       where: { itemId: parseInt(itemId) },
     });
@@ -45,11 +50,11 @@ export const transferItem = asyncHandler(async (req, res) => {
 
   // Определяем цель перемещения
   let destination;
-  if (to === 'store') {
+  if (to === "store") {
     destination = await prisma.store.findUnique({
       where: { itemId: parseInt(itemId) },
     });
-  } else if (to === 'warehouse') {
+  } else if (to === "warehouse") {
     destination = await prisma.warehouse.findUnique({
       where: { itemId: parseInt(itemId) },
     });
@@ -85,5 +90,7 @@ export const transferItem = asyncHandler(async (req, res) => {
     });
   }
 
-  res.json({ message: `Successfully transferred ${quantity} items from ${from} to ${to}.` });
+  res.json({
+    message: `Successfully transferred ${quantity} items from ${from} to ${to}.`,
+  });
 });

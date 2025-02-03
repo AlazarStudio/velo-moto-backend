@@ -22,7 +22,10 @@ export const getSalesReport = asyncHandler(async (req, res) => {
   });
 
   const totalQuantity = sales.reduce((acc, sale) => acc + sale.quantity, 0);
-  const totalAmount = sales.reduce((acc, sale) => acc + sale.quantity * sale.price, 0);
+  const totalAmount = sales.reduce(
+    (acc, sale) => acc + sale.quantity * sale.price,
+    0
+  );
 
   // Determine the most sold color
   const colorSales = sales.reduce((acc, sale) => {
@@ -34,7 +37,10 @@ export const getSalesReport = asyncHandler(async (req, res) => {
     return acc;
   }, {});
 
-  const mostSoldColor = Object.keys(colorSales).reduce((a, b) => (colorSales[a] > colorSales[b] ? a : b), '');
+  const mostSoldColor = Object.keys(colorSales).reduce(
+    (a, b) => (colorSales[a] > colorSales[b] ? a : b),
+    ""
+  );
 
   // Get write-offs
   const writeOffs = await prisma.writeOff.findMany({
@@ -50,8 +56,14 @@ export const getSalesReport = asyncHandler(async (req, res) => {
     },
   });
 
-  const totalWriteOffQuantity = writeOffs.reduce((acc, writeOff) => acc + writeOff.quantity, 0);
-  const totalWriteOffCost = writeOffs.reduce((acc, writeOff) => acc + writeOff.quantity * writeOff.price, 0);
+  const totalWriteOffQuantity = writeOffs.reduce(
+    (acc, writeOff) => acc + writeOff.quantity,
+    0
+  );
+  const totalWriteOffCost = writeOffs.reduce(
+    (acc, writeOff) => acc + writeOff.quantity * writeOff.price,
+    0
+  );
 
   // Get receipts
   const receipts = await prisma.receipt.findMany({
@@ -67,8 +79,15 @@ export const getSalesReport = asyncHandler(async (req, res) => {
     },
   });
 
-  const totalReceiptQuantity = receipts.reduce((acc, receipt) => acc + receipt.quantity, 0);
-  const totalReceiptCost = receipts.reduce((acc, receipt) => acc + receipt.quantity * (receipt.price || receipt.item.price), 0);
+  const totalReceiptQuantity = receipts.reduce(
+    (acc, receipt) => acc + receipt.quantity,
+    0
+  );
+  const totalReceiptCost = receipts.reduce(
+    (acc, receipt) =>
+      acc + receipt.quantity * (receipt.price || receipt.item.price),
+    0
+  );
 
   res.json({
     totalQuantity,
