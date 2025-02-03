@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { protect } from '../middleware/auth.middleware.js'
+import { protect, adminProtect } from '../middleware/auth.middleware.js'
 
 import {
 	createNewGroup,
@@ -12,14 +12,14 @@ import {
 
 const router = express.Router()
 
-router.route('/').post(protect, createNewGroup).get(getGroups)
+router.route('/').post(adminProtect, createNewGroup).get(getGroups)
 // router.route('/').post(createNewGroup).get(getGroups)
 
 router
 	.route('/:id')
 	.get(getGroup)
-	.put(protect, updateGroup)
-	.delete(protect, deleteGroup)
+	.put(adminProtect, updateGroup)
+	.delete(adminProtect, deleteGroup)
 // router
 // 	.route('/:id')
 // 	.get(getGroup)

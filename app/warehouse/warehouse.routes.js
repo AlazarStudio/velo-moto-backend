@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { protect } from '../middleware/auth.middleware.js'
+import { protect, adminProtect } from '../middleware/auth.middleware.js'
 
 import {
 	createNewWarehouse,
@@ -18,6 +18,6 @@ router
 	.route('/:id')
 	.get(protect, getWarehouse)
 	.put(protect, updateWarehouse)
-	.delete(protect, deleteWarehouse)
+	.delete(adminProtect, deleteWarehouse)
 
 export default router

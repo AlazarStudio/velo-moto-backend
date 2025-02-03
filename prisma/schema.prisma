@@ -18,6 +18,12 @@ enum Buyer {
   customer
 }
 
+enum Role {
+  ADMIN
+  VENDOR
+  USER
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -26,6 +32,7 @@ model User {
   login     String   @unique
   name      String
   password  String
+  role Role @default(USER)
   Cart      Cart[]
 }
 
