@@ -17,11 +17,11 @@ export const authUser = asyncHandler(async (req, res) => {
       login,
     },
   });
-
+  
   const isValidPassword = await verify(user.password, password);
 
   if (user && isValidPassword) {
-    const token = generateToken(user.id);
+    const token = generateToken(user.id, user.role);
     res.json({ user, token });
   } else {
     res.status(401);
