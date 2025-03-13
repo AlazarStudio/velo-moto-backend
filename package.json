@@ -28,7 +28,7 @@
     "prettier": "^3.3.3"
   },
   "devDependencies": {
-    "@prisma/client": "^5.19.1",
-    "prisma": "^5.19.1"
+    "@prisma/client": "^6.5.0",
+    "prisma": "^6.5.0"
   }
 }
