@@ -46,7 +46,7 @@ export const getCartItemsCustomer = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
   // console.log("req", req);
-  let cartItems = null;
+  let cartItems;
   if (req.user.role === "ADMIN") {
     cartItems = await prisma.cart.findMany({
       where: { buyertype: "customer" },
@@ -70,7 +70,7 @@ export const getCartItemsContractor = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
   // console.log("req", req);
-  let cartItems = null;
+  let cartItems;
   if (req.user.role === "ADMIN") {
     cartItems = await prisma.cart.findMany({
       where: { buyertype: "contractor" },
@@ -159,10 +159,18 @@ export const confirmSale = asyncHandler(async (req, res) => {
     );
   }
 
-  const cartItems = await prisma.cart.findMany({
-    where: { userId, buyertype },
-    include: { Item: true },
-  });
+  let cartItems;
+  if (req.user.role === "ADMIN") {
+    cartItems = await prisma.cart.findMany({
+      where: { buyertype },
+      include: { Item: true },
+    });
+  } else {
+    cartItems = await prisma.cart.findMany({
+      where: { userId, buyertype },
+      include: { Item: true },
+    });
+  }
 
   if (!cartItems.length) {
     res.status(400);
