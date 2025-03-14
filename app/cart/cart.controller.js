@@ -45,16 +45,23 @@ export const addItemToCart = asyncHandler(async (req, res) => {
 export const getCartItemsCustomer = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
-  console.log(`\n user - ${JSON.stringify(req.user)}`);
-
   // console.log("req", req);
-
-  const cartItems = await prisma.cart.findMany({
-    where: { userId, buyertype: "customer" },
-    include: {
-      Item: true,
-    },
-  });
+  const cartItems = null;
+  if (req.user.role === "ADMIN") {
+    cartItems = await prisma.cart.findMany({
+      where: { buyertype: "customer" },
+      include: {
+        Item: true,
+      },
+    });
+  } else {
+    cartItems = await prisma.cart.findMany({
+      where: { userId, buyertype: "customer" },
+      include: {
+        Item: true,
+      },
+    });
+  }
 
   res.json(cartItems);
 });
@@ -63,13 +70,22 @@ export const getCartItemsContractor = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
   // console.log("req", req);
-
-  const cartItems = await prisma.cart.findMany({
-    where: { userId, buyertype: "contractor" },
-    include: {
-      Item: true,
-    },
-  });
+  const cartItems = null;
+  if (req.user.role === "ADMIN") {
+    cartItems = await prisma.cart.findMany({
+      where: { buyertype: "contractor" },
+      include: {
+        Item: true,
+      },
+    });
+  } else {
+    cartItems = await prisma.cart.findMany({
+      where: { userId, buyertype: "contractor" },
+      include: {
+        Item: true,
+      },
+    });
+  }
 
   res.json(cartItems);
 });
@@ -131,12 +147,16 @@ export const confirmSale = asyncHandler(async (req, res) => {
 
   if (!["contractor", "customer"].includes(buyertype)) {
     res.status(400);
-    throw new Error("Некорректный тип покупателя. Укажите 'contractor' или 'customer'.");
+    throw new Error(
+      "Некорректный тип покупателя. Укажите 'contractor' или 'customer'."
+    );
   }
 
   if (buyertype === "contractor" && !contrAgentId) {
     res.status(400);
-    throw new Error("Необходимо указать ID контрагента для типа покупателя 'contractor'.");
+    throw new Error(
+      "Необходимо указать ID контрагента для типа покупателя 'contractor'."
+    );
   }
 
   const cartItems = await prisma.cart.findMany({
@@ -153,9 +173,10 @@ export const confirmSale = asyncHandler(async (req, res) => {
     await prisma.$transaction(async (prisma) => {
       for (const cartItem of cartItems) {
         // Используем индивидуальную цену, если она указана, иначе стандартную цену товара
-        const itemPrice = customPrices && customPrices[cartItem.itemId]
-          ? customPrices[cartItem.itemId]
-          : cartItem.Item.priceForSale;
+        const itemPrice =
+          customPrices && customPrices[cartItem.itemId]
+            ? customPrices[cartItem.itemId]
+            : cartItem.Item.priceForSale;
 
         // Создаем запись о продаже
         await prisma.sale.create({
@@ -187,7 +208,6 @@ export const confirmSale = asyncHandler(async (req, res) => {
               },
             },
           });
-
         } else if (saleFrom === "warehouse") {
           const warehouseItem = await prisma.warehouse.findUnique({
             where: { itemId: parseInt(cartItem.itemId) },
@@ -206,7 +226,9 @@ export const confirmSale = asyncHandler(async (req, res) => {
             },
           });
         } else {
-          throw new Error("Invalid source. It must be either 'store' or 'warehouse'.");
+          throw new Error(
+            "Invalid source. It must be either 'store' or 'warehouse'."
+          );
         }
 
         // Удаляем товар из корзины после продажи
@@ -222,4 +244,3 @@ export const confirmSale = asyncHandler(async (req, res) => {
     throw new Error(error.message);
   }
 });
-
