@@ -45,6 +45,8 @@ export const addItemToCart = asyncHandler(async (req, res) => {
 export const getCartItemsCustomer = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
+  console.log(`\n user - ${JSON.stringify(req.user)}`);
+
   // console.log("req", req);
 
   const cartItems = await prisma.cart.findMany({
