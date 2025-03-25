@@ -37,11 +37,11 @@ export const getContragent = asyncHandler(async (req, res) => {
 // @route 	POST /api/contragents
 // @access  Private
 export const createNewContragent = asyncHandler(async (req, res) => {
-	const { name, number, email, adress } = req.body
+	const { name, number, email, adress, inn } = req.body
 
 	const contragent = await prisma.contrAgent.create({
 		data: {
-			name, number, email, adress
+			name, number, email, adress, inn
 		}
 	})
 
@@ -53,7 +53,7 @@ export const createNewContragent = asyncHandler(async (req, res) => {
 // @route 	PUT /api/contragents/:id
 // @access  Private
 export const updateContragent = asyncHandler(async (req, res) => {
-	const { name, number, email, adress } = req.body
+	const { name, number, email, adress, inn } = req.body
 
 	try {
 		const contragent = await prisma.contrAgent.update({
@@ -61,7 +61,7 @@ export const updateContragent = asyncHandler(async (req, res) => {
 				id: +req.params.id
 			},
 			data: {
-				name, number, email, adress
+				name, number, email, adress, inn
 			}
 		})
 
