@@ -6,6 +6,7 @@ import { prisma } from "../prisma.js";
 // @access  Private
 export const createSale = asyncHandler(async (req, res) => {
   const { itemId, quantity, price, source, buyerType, contrAgentId } = req.body; // Добавлено поле source, buyerType и contrAgentId
+  const userId = req.user.id;
 
   const item = await prisma.item.findUnique({
     where: { id: parseInt(itemId) },
@@ -22,6 +23,7 @@ export const createSale = asyncHandler(async (req, res) => {
     itemId: parseInt(itemId),
     quantity: parseInt(quantity),
     price: itemPrice,
+    user: { connect: { id: userId } },
   };
 
   // Проверка на покупателя
@@ -102,6 +104,7 @@ export const getSales = asyncHandler(async (req, res) => {
     include: {
       item: true,
       contrAgent: true, // Включаем данные контрагента, если они есть
+      user: true, // Включаем данные пользователя, если он есть
     },
   });
   res.json(sales);

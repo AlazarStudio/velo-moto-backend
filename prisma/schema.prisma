@@ -34,6 +34,7 @@ model User {
   password  String
   role      Role?
   Cart      Cart[]
+  Sale      Sale[]
 }
 
 model Group {
@@ -116,6 +117,8 @@ model Sale {
   id           Int         @id @default(autoincrement())
   createdAt    DateTime    @default(now()) @map("created_at")
   updatedAt    DateTime    @updatedAt @map("updated_at")
+  user         User        @relation(fields: [userId], references: [id])
+  userId       Int
   item         Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId       Int
   quantity     Int
@@ -145,6 +148,7 @@ model ContrAgent {
   number    String
   email     String
   adress    String
+  inn       Int?
   Sale      Sale[]
   Cart      Cart[]
 }

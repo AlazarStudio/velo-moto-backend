@@ -6,6 +6,7 @@ import { prisma } from "../prisma.js";
 // @access  Private
 export const createWriteOff = asyncHandler(async (req, res) => {
   const { itemId, quantity, reason, price, source } = req.body; // Добавлено поле source
+  const userId = req.user.id;
 
   const item = await prisma.item.findUnique({
     where: { id: parseInt(itemId) },
@@ -24,6 +25,7 @@ export const createWriteOff = asyncHandler(async (req, res) => {
       quantity: parseInt(quantity),
       reason,
       price: itemPrice,
+      user: { connect: { id: userId } },
     },
   });
 
@@ -81,6 +83,7 @@ export const getWriteOffs = asyncHandler(async (req, res) => {
   const writeOffs = await prisma.writeOff.findMany({
     include: {
       item: true,
+      user: true,
     },
   });
   res.json(writeOffs);

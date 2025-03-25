@@ -191,10 +191,12 @@ export const confirmSale = asyncHandler(async (req, res) => {
           data: {
             itemId: cartItem.itemId,
             quantity: cartItem.quantity,
+            costPrice: cartItem.item.price,
             price: itemPrice,
             source: saleFrom,
             buyertype: buyertype,
             contrAgentId: buyertype === "contractor" ? contrAgentId : null,
+            user: { connect: { id: userId } },
           },
         });
 

@@ -17,6 +17,7 @@ export const getSalesReport = asyncHandler(async (req, res) => {
     },
     include: {
       item: true,
+      user: true,
       // item: false
     },
   });
@@ -52,6 +53,7 @@ export const getSalesReport = asyncHandler(async (req, res) => {
     },
     include: {
       item: true,
+      user: true,
       // item: false
     },
   });
@@ -75,6 +77,7 @@ export const getSalesReport = asyncHandler(async (req, res) => {
     },
     include: {
       item: true,
+      user: true,
       // item: false
     },
   });
