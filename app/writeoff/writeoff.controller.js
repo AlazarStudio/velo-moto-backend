@@ -25,7 +25,7 @@ export const createWriteOff = asyncHandler(async (req, res) => {
       quantity: parseInt(quantity),
       reason,
       price: itemPrice,
-      user: { connect: { id: userId } },
+      // user: { connect: { id: userId } },
     },
   });
 
@@ -83,7 +83,7 @@ export const getWriteOffs = asyncHandler(async (req, res) => {
   const writeOffs = await prisma.writeOff.findMany({
     include: {
       item: true,
-      user: true,
+      // user: true,
     },
   });
   res.json(writeOffs);

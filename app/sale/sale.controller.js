@@ -23,7 +23,8 @@ export const createSale = asyncHandler(async (req, res) => {
     itemId: parseInt(itemId),
     quantity: parseInt(quantity),
     price: itemPrice,
-    user: { connect: { id: userId } },
+    // user: { connect: { id: userId } },
+    userId
   };
 
   // Проверка на покупателя

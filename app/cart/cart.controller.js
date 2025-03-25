@@ -187,16 +187,18 @@ export const confirmSale = asyncHandler(async (req, res) => {
             : cartItem.Item.priceForSale;
 
         // Создаем запись о продаже
+
         await prisma.sale.create({
           data: {
             itemId: cartItem.itemId,
             quantity: cartItem.quantity,
-            costPrice: cartItem.item.price,
+            costPrice: cartItem.Item.price,
             price: itemPrice,
             source: saleFrom,
             buyertype: buyertype,
             contrAgentId: buyertype === "contractor" ? contrAgentId : null,
-            user: { connect: { id: userId } },
+            // user: { connect: { id: userId } },
+            userId
           },
         });
 

@@ -7,6 +7,8 @@ import { prisma } from "../prisma.js";
 export const getSalesReport = asyncHandler(async (req, res) => {
   const { startDate, endDate } = req.query;
 
+
+
   // Get sales
   const sales = await prisma.sale.findMany({
     where: {
@@ -53,7 +55,7 @@ export const getSalesReport = asyncHandler(async (req, res) => {
     },
     include: {
       item: true,
-      user: true,
+      // user: true,
       // item: false
     },
   });
@@ -77,7 +79,7 @@ export const getSalesReport = asyncHandler(async (req, res) => {
     },
     include: {
       item: true,
-      user: true,
+      // user: true,
       // item: false
     },
   });

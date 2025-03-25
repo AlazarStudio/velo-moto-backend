@@ -117,12 +117,13 @@ model Sale {
   id           Int         @id @default(autoincrement())
   createdAt    DateTime    @default(now()) @map("created_at")
   updatedAt    DateTime    @updatedAt @map("updated_at")
-  user         User?        @relation(fields: [userId], references: [id])
+  user         User?       @relation(fields: [userId], references: [id])
   userId       Int?
   item         Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId       Int
   quantity     Int
   price        Int?
+  costPrice    Int?
   contrAgent   ContrAgent? @relation(fields: [contrAgentId], references: [id])
   contrAgentId Int?
   buyertype    Buyer
