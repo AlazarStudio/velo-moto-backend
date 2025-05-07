@@ -79,6 +79,7 @@ model Item {
   frameGrouve      String?    @map("frame_grouve")
   amortization     String?
   // --------------------------------
+  cooling          String?
   motor            String?
   saddleHeight     String?    @map("saddle_height")
   maximumLoad      String?    @map("maximum_load")
