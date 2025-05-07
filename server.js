@@ -111,27 +111,27 @@ async function main() {
   app.use(notFound);
   app.use(errorHandler);
 
-  const PORT = process.env.PORT || 4000;
+  // const PORT = process.env.PORT || 4000;
 
-  // const PORT = process.env.PORT || 443;
+  const PORT = process.env.PORT || 443;
 
-  // const sslOptions = {
-  //   key: fs.readFileSync(
-  //     "../../../etc/letsencrypt/live/backend.velomotodrive-kchr.ru/privkey.pem"
-  //   ),
-  //   cert: fs.readFileSync(
-  //     "../../../etc/letsencrypt/live/backend.velomotodrive-kchr.ru/fullchain.pem"
-  //   ),
-  // };
+  const sslOptions = {
+    key: fs.readFileSync(
+      "../../../etc/letsencrypt/live/backend.velomotodrive-kchr.ru/privkey.pem"
+    ),
+    cert: fs.readFileSync(
+      "../../../etc/letsencrypt/live/backend.velomotodrive-kchr.ru/fullchain.pem"
+    ),
+  };
 
-  // https.createServer(sslOptions, app).listen(PORT, () => {
-  //   console.log(`HTTPS server running on port ${PORT}`);
-  // });
+  https.createServer(sslOptions, app).listen(PORT, () => {
+    console.log(`HTTPS server running on port ${PORT}`);
+  });
 
-  app.listen(
-    PORT,
-    console.log(`Server running in ${process.env.NODE_ENV} on port ${PORT}`)
-  );
+  // app.listen(
+  //   PORT,
+  //   console.log(`Server running in ${process.env.NODE_ENV} on port ${PORT}`)
+  // );
 }
 
 main()
