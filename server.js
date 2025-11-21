@@ -26,6 +26,8 @@ import contragentRoutes from "./app/contragent/contragent.routes.js";
 import transferRoutes from "./app/transfer/transfer.routes.js";
 import cartRoutes from "./app/cart/cart.routes.js";
 
+import paymentRoutes from "./app/payment/payment.routes.js";
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -107,6 +109,8 @@ async function main() {
   app.use("/api/contragents", contragentRoutes);
   app.use("/api/transfer", transferRoutes);
   app.use("/api/cart", cartRoutes);
+
+  app.use("/api/payments", paymentRoutes);
 
   app.use(notFound);
   app.use(errorHandler);
