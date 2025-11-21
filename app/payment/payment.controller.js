@@ -12,6 +12,7 @@ const {
 } = process.env;
 
 const toKopecks = (rub) => Math.round(Number(rub || 0) * 100);
+console.log(ALFA_GATEWAY_URL)
 
 export const createPayment = asyncHandler(async (req, res) => {
   const { items, fullName, phone, email } = req.body;
