@@ -35,7 +35,7 @@ export const createPayment = asyncHandler(async (req, res) => {
     orderNumber,
     returnUrl: ALFA_RETURN_URL || "https://velomotodrive-kchr.ru/shopping-cart",
     failUrl: ALFA_FAIL_URL  || "https://velomotodrive-kchr.ru/shopping-cart",
-    description: `Оплата заказа №${orderNumber} ${items.map((i => i.name))}`,
+    description: `Оплата заказа №${orderNumber}, товары: ${items.map((i => i.name))}`,
     email,
     phone,
     language: "ru",
