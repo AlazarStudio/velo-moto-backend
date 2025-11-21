@@ -50,6 +50,7 @@ export const createPayment = asyncHandler(async (req, res) => {
     phone,
     language: "ru",
   };
+	console.log(payload)
 
   const { data } = await axios.post(
     `${ALFA_GATEWAY_URL}register.do`,
