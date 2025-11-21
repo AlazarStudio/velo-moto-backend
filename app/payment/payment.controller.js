@@ -31,6 +31,11 @@ export const createPayment = asyncHandler(async (req, res) => {
     ALFA_FAIL_URL,
   } = process.env;
 
+	console.log(ALFA_USER_NAME)
+	console.log(ALFA_PASSWORD)
+	console.log(ALFA_RETURN_URL)
+	console.log(ALFA_FAIL_URL)
+
   if (!ALFA_USER_NAME || !ALFA_PASSWORD) {
     return res.status(500).json({
       ok: false,
