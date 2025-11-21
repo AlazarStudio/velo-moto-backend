@@ -26,7 +26,7 @@ export const createPayment = asyncHandler(async (req, res) => {
     0
   );
   const amount = toKopecks(totalRub);
-  const orderNumber = `web-${Date.now()}`;
+  const orderNumber = `web-site-${Date.now()}`;
 
   const payload = {
     userName: ALFA_USER_NAME,       // r-velomotodrive_kchr-api
