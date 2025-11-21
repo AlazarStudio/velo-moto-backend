@@ -41,12 +41,12 @@ export const createPayment = asyncHandler(async (req, res) => {
     language: "ru",
   };
 
-  console.log("ALFA payload:", payload);
+  // console.log("ALFA payload:", payload);
 
   // Делаем GET с такими же параметрами, как ты пробовал в браузере
   const { data } = await axios.get(GATEWAY_URL, { params: payload });
 
-  console.log("ALFA response:", data);
+  // console.log("ALFA response:", data);
 
   if (data.errorCode && data.errorCode !== "0") {
     return res.status(400).json({
