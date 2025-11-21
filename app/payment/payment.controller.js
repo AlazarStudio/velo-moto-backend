@@ -2,54 +2,41 @@
 import asyncHandler from "express-async-handler";
 import axios from "axios";
 import qs from "querystring";
-import "dotenv/config"; // чтобы .env точно подхватился и в этом модуле
 
-// конвертация рублей → копейки
+const {
+  ALFA_GATEWAY_URL,
+  ALFA_USER_NAME,
+  ALFA_PASSWORD,
+  ALFA_RETURN_URL,
+  ALFA_FAIL_URL,
+} = process.env;
+
 const toKopecks = (rub) => Math.round(Number(rub || 0) * 100);
-
-const getGatewayBase = () => {
-  const base =
-    process.env.ALFA_GATEWAY_URL ||
-    "https://payment.alfabank.ru/payment/rest/"; // боевой URL Альфы 
-
-  // гарантируем один слэш в конце
-  return base.replace(/\/+$/, "") + "/";
-};
+console.log(ALFA_GATEWAY_URL)
+console.log(ALFA_USER_NAME)
+console.log(ALFA_PASSWORD)
+console.log(ALFA_RETURN_URL)
+console.log(ALFA_FAIL_URL)
 
 export const createPayment = asyncHandler(async (req, res) => {
   const { items, fullName, phone, email } = req.body;
 
   if (!items || !items.length) {
-    return res.status(400).json({ ok: false, message: "Корзина пуста" });
+    res.status(400);
+    throw new Error("Корзина пуста");
   }
 
-  const gateway = getGatewayBase();
-  const {
-    ALFA_USER_NAME,
-    ALFA_PASSWORD,
-    ALFA_RETURN_URL,
-    ALFA_FAIL_URL,
-  } = process.env;
-
-	console.log(ALFA_USER_NAME)
-	console.log(ALFA_PASSWORD)
-	console.log(ALFA_RETURN_URL)
-	console.log(ALFA_FAIL_URL)
-
-  if (!ALFA_USER_NAME || !ALFA_PASSWORD) {
-    return res.status(500).json({
-      ok: false,
-      message: "ALFA_USER_NAME/ALFA_PASSWORD не заданы на сервере",
-    });
-  }
-
+  // считаем сумму по корзине (в рублях)
   const totalRub = items.reduce(
     (sum, item) => sum + Number(item.priceForSale || item.price || 0),
     0
   );
 
-  const amount = toKopecks(totalRub);
-  const orderNumber = `web-${Date.now()}`;
+  const amount = toKopecks(totalRub); // в копейках
+  const orderNumber = `web-${Date.now()}`; // любой уникальный номер заказа
+
+  // если нужно — здесь можешь сохранить заказ в БД через prisma
+  // и привязать к нему orderNumber
 
   const payload = {
     userName: ALFA_USER_NAME,
@@ -64,54 +51,23 @@ export const createPayment = asyncHandler(async (req, res) => {
     language: "ru",
   };
 
-  try {
-    const { data } = await axios.post(
-      `${gateway}register.do`,
-      qs.stringify(payload),
-      {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      }
-    );
-
-    // Банк ответил 200, но внутри есть errorCode
-    if (data.errorCode && data.errorCode !== "0") {
-      console.error("ALFA register error:", data);
-      return res.status(400).json({
-        ok: false,
-        source: "alfa",
-        errorCode: data.errorCode,
-        errorMessage: data.errorMessage,
-        raw: data,
-      });
+  const { data } = await axios.post(
+    `${ALFA_GATEWAY_URL}register.do`,
+    qs.stringify(payload),
+    {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     }
+  );
 
-    return res.json({
-      ok: true,
-      formUrl: data.formUrl,
-      orderId: data.orderId,
-    });
-  } catch (err) {
-    // Ошибка HTTP от Альфы
-    if (err.response) {
-      console.error(
-        "ALFA HTTP error:",
-        err.response.status,
-        err.response.data
-      );
-      return res.status(502).json({
-        ok: false,
-        source: "alfa-http",
-        status: err.response.status,
-        data: err.response.data,
-      });
-    }
-
-    // Внутренняя ошибка (URL, сеть и т.п.)
-    console.error("createPayment internal error:", err);
-    return res.status(500).json({
-      ok: false,
-      source: "server",
-      message: err.message,
-    });
+  if (data.errorCode && data.errorCode !== "0") {
+    console.error("Alfa error:", data);
+    res.status(502);
+    throw new Error(data.errorMessage || "Ошибка платёжного шлюза");
   }
+
+  // frontend дальше делает window.location.href = formUrl
+  res.json({
+    formUrl: data.formUrl,
+    orderId: data.orderId,
+  });
 });
